@@ -1,0 +1,433 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		103267DC1FE1D672003A68FE /* DjangoCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103267DB1FE1D672003A68FE /* DjangoCoreData.swift */; };
+		105D60331FDBA043007DD551 /* DjangoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D60321FDBA043007DD551 /* DjangoResponse.swift */; };
+		105D60361FDBA08F007DD551 /* DjangoGETRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D60351FDBA08F007DD551 /* DjangoGETRequest.swift */; };
+		105D60391FDBA0C2007DD551 /* DjangoListRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D60381FDBA0C2007DD551 /* DjangoListRequest.swift */; };
+		105D603B1FDBA103007DD551 /* DjangoPOSTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D603A1FDBA103007DD551 /* DjangoPOSTRequest.swift */; };
+		105D603D1FDBA11F007DD551 /* DjangoPUTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D603C1FDBA11F007DD551 /* DjangoPUTRequest.swift */; };
+		105D603F1FDBA131007DD551 /* DjangoPATCHRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D603E1FDBA131007DD551 /* DjangoPATCHRequest.swift */; };
+		105D60411FDBA145007DD551 /* DjangoDELETERequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D60401FDBA145007DD551 /* DjangoDELETERequest.swift */; };
+		105D60441FDBA16D007DD551 /* DiscardableResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105D60431FDBA16D007DD551 /* DiscardableResponse.swift */; };
+		108112201FCB85F6001707C2 /* String+StrippingPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1081121F1FCB85F5001707C2 /* String+StrippingPadding.swift */; };
+		108112231FCB8787001707C2 /* CSRF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108112221FCB8787001707C2 /* CSRF.swift */; };
+		1085FBAE1FC766A8002D1CC6 /* DjangoSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 1085FBAC1FC766A8002D1CC6 /* DjangoSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1085FBB61FC76719002D1CC6 /* DjangoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1085FBB51FC76719002D1CC6 /* DjangoManager.swift */; };
+		1085FBB81FC769CB002D1CC6 /* DjangoRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1085FBB71FC769CB002D1CC6 /* DjangoRequest.swift */; };
+		1085FBBF1FC7878B002D1CC6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1085FBBE1FC7878B002D1CC6 /* Extensions.swift */; };
+		10E235DB1FDC25EE00567BC3 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E235DA1FDC25EE00567BC3 /* SwiftyJSON.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		103267DB1FE1D672003A68FE /* DjangoCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoCoreData.swift; sourceTree = "<group>"; };
+		105D60321FDBA043007DD551 /* DjangoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoResponse.swift; sourceTree = "<group>"; };
+		105D60351FDBA08F007DD551 /* DjangoGETRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoGETRequest.swift; sourceTree = "<group>"; };
+		105D60381FDBA0C2007DD551 /* DjangoListRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoListRequest.swift; sourceTree = "<group>"; };
+		105D603A1FDBA103007DD551 /* DjangoPOSTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoPOSTRequest.swift; sourceTree = "<group>"; };
+		105D603C1FDBA11F007DD551 /* DjangoPUTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoPUTRequest.swift; sourceTree = "<group>"; };
+		105D603E1FDBA131007DD551 /* DjangoPATCHRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoPATCHRequest.swift; sourceTree = "<group>"; };
+		105D60401FDBA145007DD551 /* DjangoDELETERequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoDELETERequest.swift; sourceTree = "<group>"; };
+		105D60431FDBA16D007DD551 /* DiscardableResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardableResponse.swift; sourceTree = "<group>"; };
+		1081121F1FCB85F5001707C2 /* String+StrippingPadding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+StrippingPadding.swift"; sourceTree = "<group>"; };
+		108112221FCB8787001707C2 /* CSRF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSRF.swift; sourceTree = "<group>"; };
+		1085FBA91FC766A8002D1CC6 /* DjangoSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DjangoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1085FBAC1FC766A8002D1CC6 /* DjangoSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DjangoSwift.h; sourceTree = "<group>"; };
+		1085FBAD1FC766A8002D1CC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1085FBB51FC76719002D1CC6 /* DjangoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoManager.swift; sourceTree = "<group>"; };
+		1085FBB71FC769CB002D1CC6 /* DjangoRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DjangoRequest.swift; sourceTree = "<group>"; };
+		1085FBBE1FC7878B002D1CC6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		10E235DA1FDC25EE00567BC3 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1085FBA51FC766A8002D1CC6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		105D60311FDBA032007DD551 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				105D60341FDBA081007DD551 /* Requests */,
+				105D60421FDBA15E007DD551 /* Responses */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		105D60341FDBA081007DD551 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				1085FBB71FC769CB002D1CC6 /* DjangoRequest.swift */,
+				105D60351FDBA08F007DD551 /* DjangoGETRequest.swift */,
+				105D60381FDBA0C2007DD551 /* DjangoListRequest.swift */,
+				105D603A1FDBA103007DD551 /* DjangoPOSTRequest.swift */,
+				105D603C1FDBA11F007DD551 /* DjangoPUTRequest.swift */,
+				105D603E1FDBA131007DD551 /* DjangoPATCHRequest.swift */,
+				105D60401FDBA145007DD551 /* DjangoDELETERequest.swift */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		105D60421FDBA15E007DD551 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				105D60321FDBA043007DD551 /* DjangoResponse.swift */,
+				105D60431FDBA16D007DD551 /* DiscardableResponse.swift */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		108112211FCB8777001707C2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				108112221FCB8787001707C2 /* CSRF.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1085FB9F1FC766A8002D1CC6 = {
+			isa = PBXGroup;
+			children = (
+				1085FBB41FC766F3002D1CC6 /* Common */,
+				1085FBAB1FC766A8002D1CC6 /* DjangoSwift iOS */,
+				1085FBAA1FC766A8002D1CC6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1085FBAA1FC766A8002D1CC6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1085FBA91FC766A8002D1CC6 /* DjangoSwift.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1085FBAB1FC766A8002D1CC6 /* DjangoSwift iOS */ = {
+			isa = PBXGroup;
+			children = (
+				1085FBAD1FC766A8002D1CC6 /* Info.plist */,
+			);
+			path = "DjangoSwift iOS";
+			sourceTree = "<group>";
+		};
+		1085FBB41FC766F3002D1CC6 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				108112211FCB8777001707C2 /* Models */,
+				10E454F41FD08117002FBC21 /* Other */,
+				105D60311FDBA032007DD551 /* Protocols */,
+				1085FBAC1FC766A8002D1CC6 /* DjangoSwift.h */,
+				1085FBB51FC76719002D1CC6 /* DjangoManager.swift */,
+				103267DB1FE1D672003A68FE /* DjangoCoreData.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		10E454F41FD08117002FBC21 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				1081121F1FCB85F5001707C2 /* String+StrippingPadding.swift */,
+				10E235DA1FDC25EE00567BC3 /* SwiftyJSON.swift */,
+				1085FBBE1FC7878B002D1CC6 /* Extensions.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		1085FBA61FC766A8002D1CC6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1085FBAE1FC766A8002D1CC6 /* DjangoSwift.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1085FBA81FC766A8002D1CC6 /* DjangoSwift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1085FBB11FC766A8002D1CC6 /* Build configuration list for PBXNativeTarget "DjangoSwift" */;
+			buildPhases = (
+				1085FBA41FC766A8002D1CC6 /* Sources */,
+				1085FBA51FC766A8002D1CC6 /* Frameworks */,
+				1085FBA61FC766A8002D1CC6 /* Headers */,
+				1085FBA71FC766A8002D1CC6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DjangoSwift;
+			productName = DjangoSwift;
+			productReference = 1085FBA91FC766A8002D1CC6 /* DjangoSwift.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1085FBA01FC766A8002D1CC6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0910;
+				ORGANIZATIONNAME = "Michael Schloss";
+				TargetAttributes = {
+					1085FBA81FC766A8002D1CC6 = {
+						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 0910;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 1085FBA31FC766A8002D1CC6 /* Build configuration list for PBXProject "DjangoSwift" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1085FB9F1FC766A8002D1CC6;
+			productRefGroup = 1085FBAA1FC766A8002D1CC6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1085FBA81FC766A8002D1CC6 /* DjangoSwift */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1085FBA71FC766A8002D1CC6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1085FBA41FC766A8002D1CC6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1085FBBF1FC7878B002D1CC6 /* Extensions.swift in Sources */,
+				103267DC1FE1D672003A68FE /* DjangoCoreData.swift in Sources */,
+				108112231FCB8787001707C2 /* CSRF.swift in Sources */,
+				105D60391FDBA0C2007DD551 /* DjangoListRequest.swift in Sources */,
+				10E235DB1FDC25EE00567BC3 /* SwiftyJSON.swift in Sources */,
+				105D603F1FDBA131007DD551 /* DjangoPATCHRequest.swift in Sources */,
+				105D603D1FDBA11F007DD551 /* DjangoPUTRequest.swift in Sources */,
+				105D603B1FDBA103007DD551 /* DjangoPOSTRequest.swift in Sources */,
+				1085FBB81FC769CB002D1CC6 /* DjangoRequest.swift in Sources */,
+				1085FBB61FC76719002D1CC6 /* DjangoManager.swift in Sources */,
+				105D60441FDBA16D007DD551 /* DiscardableResponse.swift in Sources */,
+				105D60411FDBA145007DD551 /* DjangoDELETERequest.swift in Sources */,
+				105D60361FDBA08F007DD551 /* DjangoGETRequest.swift in Sources */,
+				105D60331FDBA043007DD551 /* DjangoResponse.swift in Sources */,
+				108112201FCB85F6001707C2 /* String+StrippingPadding.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1085FBAF1FC766A8002D1CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1085FBB01FC766A8002D1CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		1085FBB21FC766A8002D1CC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7SSRC7UGJ6;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/DjangoSwift iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Michael-Schloss.DjangoSwift";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1085FBB31FC766A8002D1CC6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7SSRC7UGJ6;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/DjangoSwift iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Michael-Schloss.DjangoSwift";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1085FBA31FC766A8002D1CC6 /* Build configuration list for PBXProject "DjangoSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1085FBAF1FC766A8002D1CC6 /* Debug */,
+				1085FBB01FC766A8002D1CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1085FBB11FC766A8002D1CC6 /* Build configuration list for PBXNativeTarget "DjangoSwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1085FBB21FC766A8002D1CC6 /* Debug */,
+				1085FBB31FC766A8002D1CC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1085FBA01FC766A8002D1CC6 /* Project object */;
+}
