@@ -15,7 +15,7 @@ import Foundation
  */
 public protocol DjangoGETRequest : DjangoRequest
 {
-    ///A dictionary specifying URI key-value pairs
+    ///A dictionary specifying URI key-value pairs.  Defaults to `nil`
     var queryParameters : [String : String]? { get }
 }
 

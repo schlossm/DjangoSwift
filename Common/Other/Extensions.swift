@@ -11,10 +11,10 @@ import CoreData
 
 public extension String
 {
-    var urlEncodedString : String
+    var urlEncoded : String
     {
         let resultBytes = utf8.flatMap { $0.urlEncodedBytes }
-        return String(bytes: resultBytes, encoding: .utf8)!
+        return String(bytes: resultBytes, encoding: .utf8) ?? self
     }
 }
 

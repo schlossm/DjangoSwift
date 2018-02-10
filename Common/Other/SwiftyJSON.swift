@@ -228,7 +228,7 @@ public struct JSON {
         var string = ""
         for (key, value) in self
         {
-            string += "\(key)=\(value.string?.urlEncodedString ?? "")&"
+            string += "\(key)=\(value.string?.urlEncoded ?? "")&"
         }
         return string.strippingPadding(off: .end, paddingCharacter: "&")
     }

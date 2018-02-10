@@ -19,10 +19,10 @@ private enum HTTPMethod : String
 
 public class DjangoManager
 {
-    ///Returns the applications DjangoManager instance
+    ///Returns the application's DjangoManager instance
     public static let shared = DjangoManager()
     
-    ///Set this to false if your Django endpoints do not require a CSRF token
+    ///Determines whether endpoints require a Cross-Site Request Forgery token to be transmitted with each `POST`.  Defaults to `true`
     public static var requiresCSRFToken = true
     
     /**
@@ -67,6 +67,11 @@ public class DjangoManager
     public static var tokenName = "Token"
     
     /**
+     Defines a set of extra app/server specific headers that should be included with every request
+     */
+    public static var extraHeaders = [String : String]()
+    
+    /**
      The base URL on which all Django requests will build from.  This should be set prior to initiating any requests.
      
      If this is not set prior to a request being generated, undefined behavior will occur
@@ -101,17 +106,21 @@ public class DjangoManager
     
     //MARK: - Private Helper Methods
     
-    private func request(withAuthorizationToken token: String?, csrfKey: String?, for url: URL, method: HTTPMethod) -> URLRequest
+    private func request(for url: URL, method: HTTPMethod) -> URLRequest
     {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-        if let token = token
+        if let token = authToken
         {
-            request.setValue("\(DjangoManager.tokenName) \(token.urlEncodedString)", forHTTPHeaderField: "Authorization")
+            request.setValue("\(DjangoManager.tokenName) \(token.urlEncoded)", forHTTPHeaderField: "Authorization")
         }
-        if let csrfKey = csrfKey
+        if let csrfKey = csrfToken
         {
-            request.setValue(csrfKey.urlEncodedString, forHTTPHeaderField: "X-CSRFToken")
+            request.setValue(csrfKey.urlEncoded, forHTTPHeaderField: "X-CSRFToken")
+        }
+        for header in DjangoManager.extraHeaders
+        {
+            request.setValue(header.value, forHTTPHeaderField: header.key)
         }
         request.setValue(DjangoManager.shared.baseURL.absoluteString, forHTTPHeaderField: "Referer")
         return request
@@ -154,7 +163,7 @@ extension DjangoManager
      */
     public func get<T : DjangoStringRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        let urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: baseURL.appendingPathComponent(request.endpoint), method: .get)
+        let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .get)
         print("GET \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
         URLSession.shared.dataTask(with: urlRequest) { responseData, response, error in
             DispatchQueue.main.async {
@@ -212,7 +221,7 @@ extension DjangoManager
         }
         print("GET \(finalURL.absoluteString)")
         
-        let urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: finalURL, method: .get)
+        let urlRequest = self.request(for: finalURL, method: .get)
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
     
@@ -245,7 +254,7 @@ extension DjangoManager
         }
         print("GET \(finalURL.absoluteString)")
         
-        let urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: finalURL, method: .get)
+        let urlRequest = self.request(for: finalURL, method: .get)
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
 
@@ -264,10 +273,10 @@ extension DjangoManager
      */
     public func post<T : DjangoStringPOSTRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: baseURL.appendingPathComponent(request.endpoint), method: .post)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .post)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.postData?.formURLEncoded.data(using: .ascii)
-        print("POST \(urlRequest.url?.absoluteString ?? baseURL.absoluteString)")
+        print("POST \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
         let completion : (String?) -> Void = { token in
             var urlRequest = urlRequest
             if let token = token
@@ -327,10 +336,10 @@ extension DjangoManager
      */
     public func post<T : DjangoPOSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: baseURL.appendingPathComponent(request.endpoint), method: .post)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .post)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.postData?.formURLEncoded.data(using: .ascii)
-        print("POST \(urlRequest.url?.absoluteString ?? baseURL.absoluteString)")
+        print("POST \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
     
@@ -349,10 +358,10 @@ extension DjangoManager
      */
     public func put<T : DjangoPUTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: baseURL.appendingPathComponent(request.endpoint), method: .put)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .put)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.putData?.formURLEncoded.data(using: .ascii)
-        print("PUT \(urlRequest.url?.absoluteString ?? baseURL.absoluteString)")
+        print("PUT \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
     
@@ -371,10 +380,10 @@ extension DjangoManager
      */
     public func patch<T : DjangoPATCHRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: baseURL.appendingPathComponent(request.endpoint), method: .patch)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .patch)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.patchData?.formURLEncoded.data(using: .ascii)
-        print("PATCH \(urlRequest.url?.absoluteString ?? baseURL.absoluteString)")
+        print("PATCH \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
     
@@ -393,8 +402,8 @@ extension DjangoManager
      */
     public func delete<T : DjangoDELETERequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(withAuthorizationToken: authToken, csrfKey: csrfToken, for: baseURL.appendingPathComponent(request.endpoint), method: .delete)
-        print("DELETE \(urlRequest.url?.absoluteString ?? baseURL.absoluteString)")
+        let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .delete)
+        print("DELETE \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
 }
@@ -517,7 +526,7 @@ extension DjangoManager
                                 completion(nil, statusCode)
                                 return
                             }
-                            let urlRequest = self.request(withAuthorizationToken: self.authToken, csrfKey: self.csrfToken, for: nextURL, method: .get)
+                            let urlRequest = self.request(for: nextURL, method: .get)
                             self.perform(request: newRequest, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion, previousResults: parsedResults, loadAllPages: loadAllPages)
                         }
                         else

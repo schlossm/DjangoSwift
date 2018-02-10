@@ -9,7 +9,7 @@
 import Foundation
 
 /**
- A convenience response class that specifies the response can be discarded
+ A convenience response class that specifies the response data can be discarded.  The HTTP status code is still returned
  */
 public final class DiscardableResponse : DjangoResponse
 {
