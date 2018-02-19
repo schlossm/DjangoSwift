@@ -49,6 +49,8 @@ public class RESTManager
     
     fileprivate var csrfToken : String?
     private var _baseURL : URL?
+    private var didPrintBaseURLGetMessage = false
+    private var didPrintBaseURLSetMessage = false
     
     /**
      The Authorization token used to communicate with the REST endpoints.  Set this after successfully logging a user in
@@ -87,7 +89,11 @@ public class RESTManager
         {
             if _baseURL != nil
             {
-                print("[WARNING]: You should not set RESTManager's baseURL property more than once during application lifetime.  This can lead to requests pointing to an incorrect URL.")
+                if !didPrintBaseURLSetMessage
+                {
+                    print("[WARNING]: You should not set RESTManager's baseURL property more than once during application lifetime.  This can lead to requests pointing to an incorrect URL.")
+                    didPrintBaseURLSetMessage = true
+                }
             }
             _baseURL = newValue
         }
@@ -98,7 +104,11 @@ public class RESTManager
             {
                 return baseURL
             }
-            print("[ERROR]: RESTManager does not have a `baseURL` set!  This will lead to undefined behavior and should be immediately corrected")
+            if !didPrintBaseURLGetMessage
+            {
+                didPrintBaseURLGetMessage = true
+                print("[ERROR]: RESTManager does not have a `baseURL` set!  This will lead to undefined behavior and should be immediately corrected")
+            }
             return URL(fileURLWithPath: "/")
         }
     }
@@ -358,6 +368,11 @@ extension RESTManager
 {
     private func perform<T : RESTRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
+        guard !baseURL.absoluteString.contains("file") else
+        {
+            completion(nil, -1)
+            return
+        }
         let completion : (String?) -> Void = { token in
             var urlRequest = urlRequest
             if let token = token
@@ -423,6 +438,11 @@ extension RESTManager
     
     private func perform<T : ListRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void, previousResults: [T.Response]? = nil, loadAllPages: Bool = true)
     {
+        guard !baseURL.absoluteString.contains("file") else
+        {
+            completion(nil, -1)
+            return
+        }
         func parse(results: [JSON], statusCode: Int) -> [T.Response]?
         {
             var parsedResults : [T.Response] = previousResults ?? []
@@ -501,6 +521,11 @@ extension RESTManager
 
     private func perform<T : RESTStringRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
+        guard !baseURL.absoluteString.contains("file") else
+        {
+            completion(nil, -1)
+            return
+        }
         let completion : (String?) -> Void = { token in
             var urlRequest = urlRequest
             if let token = token

@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   s.homepage     = "https://github.com/schlossm/RESTSwift"
 
-  s.license      = "MIT"
+  s.license      = { :type => 'MIT', :file => 'MIT.txt' }
 
   s.author       = { "Michael Schloss" => "mschloss11@gmail.com" }
 
@@ -19,6 +19,8 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.12"
   s.watchos.deployment_target = "3.0"
   s.tvos.deployment_target = "10.0"
+
+  s.swift_version = "4.0"
 
   s.source       = { :git => "https://github.com/schlossm/RESTSwift.git", :tag => "#{s.version}" }
 
