@@ -49,7 +49,7 @@ public extension NSManagedObjectContext
     {
         guard let obj = NSEntityDescription.insertNewObject(forEntityName: T.entityName, into: self) as? T else
         {
-            fatalError("Unable to create an NSManagedObject of the requested type.")
+            fatalError("The request NSManagedObject could not be created")
         }
         return obj
     }
@@ -58,8 +58,4 @@ public extension NSManagedObjectContext
 public protocol ManagedObjectType : class
 {
     static var entityName : String { get }
-    static var defaultSortDescriptors : [NSSortDescriptor] { get }
-    static var defaultPredicate : NSPredicate { get }
-    var managedObjectContext : NSManagedObjectContext? { get }
 }
-

@@ -8,7 +8,7 @@
 
 //Trims a string only along a certain side.  Useful for IDs and calculator displays
 
-import UIKit
+import Foundation
 
 ///The side to trim along
 @objc enum Side : Int

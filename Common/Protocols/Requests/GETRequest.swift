@@ -1,5 +1,5 @@
 //
-//  RESTGETRequest.swift
+//  GETRequest.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
@@ -13,7 +13,7 @@ import Foundation
  
  Allows for the specification of URI key-value pairs
  */
-public protocol RESTGETRequest : RESTRequest
+public protocol GETRequest : RESTRequest
 {
     ///A dictionary specifying URI key-value pairs.  Defaults to `nil`
     var queryParameters : [String : String]? { get }
@@ -22,14 +22,14 @@ public protocol RESTGETRequest : RESTRequest
 /**
  Convenience GET request that denotes a single object should be expected from the specified endpoint
  */
-public protocol RESTSingleObjectRequest : RESTGETRequest { }
+public protocol SingleObjectRequest : GETRequest { }
 
-public extension RESTGETRequest
+public extension GETRequest
 {
     var queryParameters : [String: String]? { return nil }
 }
 
-extension RESTGETRequest
+extension GETRequest
 {
     var queryItems : [URLQueryItem]
     {

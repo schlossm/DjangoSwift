@@ -1,5 +1,5 @@
 //
-//  RESTPATCHRequest.swift
+//  PATCHRequest.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
@@ -13,7 +13,7 @@ import Foundation
  
  Allows for the specification of PATCH data
  */
-public protocol RESTPATCHRequest : RESTRequest
+public protocol PATCHRequest : RESTRequest
 {
     var patchData : JSON? { get }
 }

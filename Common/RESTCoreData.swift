@@ -21,7 +21,7 @@ public class RESTCoreData
     func loadStore(withName name: String)
     {
         let container = NSPersistentContainer(name: name)
-        container.loadPersistentStores(completionHandler: { storeDescription, error in
+        container.loadPersistentStores(completionHandler: { _, error in
             if let error = error
             {
                 print("There's been an error loading the container! Error Details: \(error)")

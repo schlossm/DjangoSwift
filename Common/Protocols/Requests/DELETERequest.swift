@@ -1,5 +1,5 @@
 //
-//  RESTDELETERequest.swift
+//  DELETERequest.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
@@ -11,4 +11,4 @@ import Foundation
 /**
  A DELETE request
  */
-public protocol RESTDELETERequest : RESTRequest { }
+public protocol DELETERequest : RESTRequest { }

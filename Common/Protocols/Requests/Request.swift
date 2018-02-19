@@ -1,5 +1,5 @@
 //
-//  RESTRequest.swift
+//  Request.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 11/23/17.
@@ -9,15 +9,21 @@
 import Foundation
 import CoreData
 
+public protocol Header
+{
+    ///Extra headers to add to the HTTP URL Request for this request
+    var extraHeaders : [String : String]? { get }
+}
+
 /**
  The basis of most REST requests in RESTSwift.
  
  This protocol should only be adopted via one of the subtypes:
- * `RESTGETRequest` and subtypes
- * `RESTPUTRequest`
- * `RESTPOSTRequest`
- * `RESTPATCHRequest`
- * `RESTDELETERequest`
+ * `GETRequest` and subtypes
+ * `PUTRequest`
+ * `POSTRequest`
+ * `PATCHRequest`
+ * `DELETERequest`
  
  Each request will, at minimum, contain two things:
  1) A `Response typealias` that points to a class that conforms to `RESTResponse` or one of its subtypes
@@ -25,7 +31,7 @@ import CoreData
 
  See `RESTRequest` subtypes for more information into each specific type of request
 */
-public protocol RESTRequest
+public protocol RESTRequest : Header
 {
     ///A class that conforms to `RESTResponse` or one of its subtypes
     associatedtype Response : RESTResponse
@@ -41,7 +47,7 @@ public protocol RESTRequest
  1) A `Response typealias` that points to a class that conforms to `RESTStringResponse` or one of its subtypes
  2) An `endpoint`.  This should **not** include the domain, only the path
  */
-public protocol RESTStringRequest
+public protocol RESTStringRequest : Header
 {
     ///A class that conforms to `RESTStringResponse` or one of its subtypes
     associatedtype Response : RESTStringResponse
@@ -54,3 +60,13 @@ public protocol RESTStringRequest
  A convenience protocol to guarantee a response is of type `PersistableRESTResponse`
  */
 public protocol PersistableRESTRequest : RESTRequest where Response : PersistableRESTResponse { }
+
+public extension RESTRequest
+{
+    var extraHeaders : [String : String]? { return nil }
+}
+
+public extension RESTStringRequest
+{
+    var extraHeaders : [String : String]? { return nil }
+}

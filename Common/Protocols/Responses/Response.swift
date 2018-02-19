@@ -1,5 +1,5 @@
 //
-//  RESTResponse.swift
+//  Response.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.

@@ -1,5 +1,5 @@
 //
-//  RESTPOSTRequest.swift
+//  POSTRequest.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
@@ -13,7 +13,7 @@ import Foundation
  
  Allows for the specification of POST data
  */
-public protocol RESTPOSTRequest : RESTRequest
+public protocol POSTRequest : RESTRequest
 {
     var postData : JSON? { get }
 }
@@ -21,7 +21,7 @@ public protocol RESTPOSTRequest : RESTRequest
 /**
  A POST request whos response will be a string, not a JSON object
  */
-public protocol RESTStringPOSTRequest : RESTStringRequest
+public protocol StringPOSTRequest : RESTStringRequest
 {
     var postData : JSON? { get }
 }

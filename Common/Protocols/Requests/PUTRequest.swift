@@ -1,5 +1,5 @@
 //
-//  RESTPUTRequest.swift
+//  PUTRequest.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
@@ -13,7 +13,7 @@ import Foundation
  
  Allows for the specification of PUT data
  */
-public protocol RESTPUTRequest : RESTRequest
+public protocol PUTRequest : RESTRequest
 {
     var putData : JSON? { get }
 }

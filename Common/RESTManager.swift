@@ -41,7 +41,7 @@ public class RESTManager
     /**
      If your REST endpoints require a CSRF token, this endpoint will be called in order to obtain the token
      
-     This URL should respond with an HTML template that contains only `{% csrf_token %}`.  REST will render a proper CSRF token for RESTSwift to use
+     This URL should respond with an HTML template that contains only the csrf token.  RESTSwift will decode the CSRF token for use
      
      Defaults to `csrf/`
      */
@@ -57,6 +57,9 @@ public class RESTManager
      */
     public var authToken : String?
     
+    ///Tells RESTManager whether or not `authToken` will need to be converted to Base64.  Defaults to `false`, meaning RESTManager will convert the token to Base64
+    public var isAuthTokenBase64Encoded = false
+    
     /**
      This is the name for the Authorization header.  It is usually `Token` or `Bearer`.
      
@@ -66,9 +69,7 @@ public class RESTManager
      */
     public static var tokenName = "Token"
     
-    /**
-     Defines a set of extra app/server specific headers that should be included with every request
-     */
+    ///Defines a set of extra app/server specific headers that should be included with every request
     public static var extraHeaders = [String : String]()
     
     /**
@@ -102,28 +103,35 @@ public class RESTManager
         }
     }
     
-    private init() {}
-    
-    //MARK: - Private Helper Methods
-    
-    private func request(for url: URL, method: HTTPMethod) -> URLRequest
+    private init() { }
+}
+
+//MARK: - Private Helper Methods
+
+extension RESTManager
+{
+    private func request<T : Header>(for url: URL, request: T, method: HTTPMethod) -> URLRequest
     {
-        var request = URLRequest(url: url)
-        request.httpMethod = method.rawValue
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method.rawValue
         if let token = authToken
         {
-            request.setValue("\(RESTManager.tokenName) \(token.urlEncoded)", forHTTPHeaderField: "Authorization")
+            urlRequest.setValue("\(RESTManager.tokenName) \(isAuthTokenBase64Encoded ? token : token.urlEncoded)", forHTTPHeaderField: "Authorization")
         }
         if let csrfKey = csrfToken
         {
-            request.setValue(csrfKey.urlEncoded, forHTTPHeaderField: "X-CSRFToken")
+            urlRequest.setValue(csrfKey.urlEncoded, forHTTPHeaderField: "X-CSRFToken")
         }
         for header in RESTManager.extraHeaders
         {
-            request.setValue(header.value, forHTTPHeaderField: header.key)
+            urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
         }
-        request.setValue(RESTManager.shared.baseURL.absoluteString, forHTTPHeaderField: "Referer")
-        return request
+        for header in (request.extraHeaders ?? [:])
+        {
+            urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
+        }
+        urlRequest.setValue(RESTManager.shared.baseURL.absoluteString, forHTTPHeaderField: "Referer")
+        return urlRequest
     }
     
     private func printDebugInformation(forResponse response: URLResponse?, responseData: Data?, withRequest request: URLRequest?)
@@ -163,44 +171,23 @@ extension RESTManager
      */
     public func get<T : RESTStringRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .get)
+        let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), request: request, method: .get)
         print("GET \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
-        URLSession.shared.dataTask(with: urlRequest) { responseData, response, error in
-            DispatchQueue.main.async {
-                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, acceptedStatusCodes.contains(statusCode) else
-                {
-                    self.printDebugInformation(forResponse: response, responseData: responseData, withRequest: urlRequest)
-                    completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                    return
-                }
-                if let error = error
-                {
-                    print(error)
-                    completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                    return
-                }
-                if let data = responseData, let string = String(data: data, encoding: .utf8)
-                {
-                    completion(T.Response.fromResponse(string: string), (response as? HTTPURLResponse)?.statusCode ?? 0)
-                    return
-                }
-                completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
-            }
-        }.resume()
+        perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
     
     /**
-     Initiates a GET request using the provided `RESTGETRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a GET request using the provided `GETRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `RESTGETRequest` object containing the information about this request
+     - Parameter request: An `GETRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
      - Parameter completion: A closure that accepts an `RESTGETResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
      - Parameter response: An `RESTGETResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func get<T : RESTGETRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func get<T : GETRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         let initialURL = baseURL.appendingPathComponent(request.endpoint)
         guard var comps = URLComponents(url: initialURL, resolvingAgainstBaseURL: true) else
@@ -221,22 +208,22 @@ extension RESTManager
         }
         print("GET \(finalURL.absoluteString)")
         
-        let urlRequest = self.request(for: finalURL, method: .get)
+        let urlRequest = self.request(for: finalURL, request: request, method: .get)
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
     
     /**
-     Initiates a GET request using the provided `RESTListRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a GET request using the provided `ListRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `RESTListRequest` object containing the information about this request
+     - Parameter request: An `ListRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
-     - Parameter completion: A closure that accepts an `RESTListRequest` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An array of `RESTListRequest` objects containing the retrieved objects, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `ListRequest` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An array of `ListRequest` objects containing the retrieved objects, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func getList<T : RESTListRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void)
+    public func getList<T : ListRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void)
     {
         let initialURL = baseURL.appendingPathComponent(request.endpoint)
         guard var comps = URLComponents(url: initialURL, resolvingAgainstBaseURL: true) else
@@ -254,89 +241,46 @@ extension RESTManager
         }
         print("GET \(finalURL.absoluteString)")
         
-        let urlRequest = self.request(for: finalURL, method: .get)
+        let urlRequest = self.request(for: finalURL, request: request, method: .get)
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
 
     //MARK: - POST
     
     /**
-     Initiates a POST request using the provided `RESTStringPOSTRequest` object.  This endpoint is to be used when the response from your server will be a String
+     Initiates a POST request using the provided `StringPOSTRequest` object.  This endpoint is to be used when the response from your server will be a String
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `RESTStringPOSTRequest` object containing the information about this request
+     - Parameter request: An `StringPOSTRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `200`
      - Parameter completion: A closure that accepts an `RESTStringResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
      - Parameter response: An `RESTStringResponse` object containing the retrieved String, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func post<T : RESTStringPOSTRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func post<T : StringPOSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .post)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), request: request, method: .post)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.postData?.formURLEncoded.data(using: .ascii)
         print("POST \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
-        let completion : (String?) -> Void = { token in
-            var urlRequest = urlRequest
-            if let token = token
-            {
-                urlRequest.addValue(token, forHTTPHeaderField: "X-CSRFToken")
-            }
-            URLSession.shared.dataTask(with: urlRequest) { responseData, response, error in
-                DispatchQueue.main.async {
-                    guard let statusCode = (response as? HTTPURLResponse)?.statusCode, acceptedStatusCodes.contains(statusCode) else
-                    {
-                        self.printDebugInformation(forResponse: response, responseData: responseData, withRequest: urlRequest)
-                        completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                        return
-                    }
-                    if let error = error
-                    {
-                        print(error)
-                        completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                        return
-                    }
-                    if let data = responseData, let string = String(data: data, encoding: .utf8)
-                    {
-                        completion(T.Response.fromResponse(string: string), (response as? HTTPURLResponse)?.statusCode ?? 0)
-                        return
-                    }
-                    completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
-                }
-                }.resume()
-        }
-        
-        if csrfToken == nil && RESTManager.requiresCSRFToken
-        {
-            getCSRFToken(completion: { token in
-                if let token = token
-                {
-                    self.csrfToken = token
-                }
-                completion(token)
-            })
-        }
-        else
-        {
-            completion(nil)
-        }
+        perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
     
     /**
-     Initiates a POST request using the provided `RESTPOSTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a POST request using the provided `POSTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `RESTPOSTRequest` object containing the information about this request
+     - Parameter request: An `POSTRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
      - Parameter completion: A closure that accepts an `RESTPOSTResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
      - Parameter response: An `RESTPOSTResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func post<T : RESTPOSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func post<T : POSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .post)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), request: request, method: .post)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.postData?.formURLEncoded.data(using: .ascii)
         print("POST \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
@@ -346,19 +290,19 @@ extension RESTManager
     //MARK: - PUT
     
     /**
-     Initiates a PUT request using the provided `RESTPUTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a PUT request using the provided `PUTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `RESTPUTRequest` object containing the information about this request
+     - Parameter request: An `PUTRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
      - Parameter completion: A closure that accepts an `RESTPUTResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
      - Parameter response: An `RESTPUTResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func put<T : RESTPUTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func put<T : PUTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .put)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), request: request, method: .put)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.putData?.formURLEncoded.data(using: .ascii)
         print("PUT \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
@@ -368,19 +312,19 @@ extension RESTManager
     //MARK: - PATCH
     
     /**
-     Initiates a PATCH request using the provided `RESTPATCHRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a PATCH request using the provided `PATCHRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `RESTPATCHRequest` object containing the information about this request
+     - Parameter request: An `PATCHRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
      - Parameter completion: A closure that accepts an `RESTPATCHResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
      - Parameter response: An `RESTPATCHResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func patch<T : RESTPATCHRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func patch<T : PATCHRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .patch)
+        var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), request: request, method: .patch)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.httpBody = request.patchData?.formURLEncoded.data(using: .ascii)
         print("PATCH \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
@@ -390,19 +334,19 @@ extension RESTManager
     //MARK: - DELETE
     
     /**
-     Initiates a DELETE request using the provided `RESTDELETERequest` object
+     Initiates a DELETE request using the provided `DELETERequest` object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `RESTDELETERequest` object containing the information about this request
+     - Parameter request: An `DELETERequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
      - Parameter completion: A closure that accepts an `RESTDELETEResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
      - Parameter response: An `RESTDELETEResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func delete<T : RESTDELETERequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func delete<T : DELETERequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
-        let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .delete)
+        let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), request: request, method: .delete)
         print("DELETE \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
         perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
     }
@@ -438,13 +382,13 @@ extension RESTManager
                     guard acceptedStatusCodes.contains(statusCode) else
                     {
                         self.printDebugInformation(forResponse: response, responseData: responseData, withRequest: urlRequest)
-                        completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
+                        completion(nil, statusCode)
                         return
                     }
                     if let error = error
                     {
                         print(error)
-                        completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
+                        completion(nil, statusCode)
                         return
                     }
                     if let data = responseData
@@ -457,7 +401,7 @@ extension RESTManager
                         completion(parsedResponse, (response as? HTTPURLResponse)?.statusCode ?? -1)
                         return
                     }
-                    completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
+                    completion(nil, statusCode)
                 }
             }.resume()
         }
@@ -477,7 +421,7 @@ extension RESTManager
         }
     }
     
-    private func perform<T : RESTListRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void, previousResults: [T.Response]? = nil, loadAllPages: Bool = true)
+    private func perform<T : ListRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void, previousResults: [T.Response]? = nil, loadAllPages: Bool = true)
     {
         func parse(results: [JSON], statusCode: Int) -> [T.Response]?
         {
@@ -526,7 +470,7 @@ extension RESTManager
                                 completion(nil, statusCode)
                                 return
                             }
-                            let urlRequest = self.request(for: nextURL, method: .get)
+                            let urlRequest = self.request(for: nextURL, request: request, method: .get)
                             self.perform(request: newRequest, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion, previousResults: parsedResults, loadAllPages: loadAllPages)
                         }
                         else
@@ -552,6 +496,61 @@ extension RESTManager
         else
         {
             csrfCompletion(nil)
+        }
+    }
+
+    private func perform<T : RESTStringRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    {
+        let completion : (String?) -> Void = { token in
+            var urlRequest = urlRequest
+            if let token = token
+            {
+                urlRequest.addValue(token, forHTTPHeaderField: "X-CSRFToken")
+            }
+            URLSession.shared.dataTask(with: urlRequest) { responseData, response, error in
+                DispatchQueue.main.async {
+                    guard let statusCode = (response as? HTTPURLResponse)?.statusCode, acceptedStatusCodes.contains(statusCode) else
+                    {
+                        self.printDebugInformation(forResponse: response, responseData: responseData, withRequest: urlRequest)
+                        completion(nil, (response as? HTTPURLResponse)?.statusCode ?? 0)
+                        return
+                    }
+                    if statusCode == 403, let data = responseData, let string = String(data: data, encoding: .utf8), string.contains("CSRF")
+                    {
+                        urlRequest.setValue(nil, forHTTPHeaderField: "X-CSRFToken")
+                        self.csrfToken = nil
+                        self.perform(request: request, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion)
+                        return
+                    }
+                    if let error = error
+                    {
+                        print(error)
+                        completion(nil, statusCode)
+                        return
+                    }
+                    if let data = responseData, let string = String(data: data, encoding: .utf8)
+                    {
+                        completion(T.Response.fromResponse(string: string), statusCode)
+                        return
+                    }
+                    completion(nil, statusCode)
+                }
+                }.resume()
+        }
+        
+        if csrfToken == nil && RESTManager.requiresCSRFToken
+        {
+            getCSRFToken(completion: { token in
+                if let token = token
+                {
+                    self.csrfToken = token
+                }
+                completion(token)
+            })
+        }
+        else
+        {
+            completion(nil)
         }
     }
 }

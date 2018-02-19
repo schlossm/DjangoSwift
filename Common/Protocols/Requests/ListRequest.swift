@@ -1,5 +1,5 @@
 //
-//  RESTListRequest.swift
+//  ListRequest.swift
 //  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
@@ -13,7 +13,7 @@ import Foundation
  
  In the event the list is too long for one page of objects, this request returns all objects from the specified page with the specified page size
  */
-public protocol RESTListRequest : RESTGETRequest
+public protocol ListRequest : GETRequest
 {
     ///The key to sort by.  Defaults to "`id`"
     static var sortKey : String { get }
@@ -34,12 +34,12 @@ public protocol RESTListRequest : RESTGETRequest
 /**
  A `RESTListRequest` that loads all pages of data
  */
-public protocol RESTListAllRequest : RESTListRequest
+public protocol ListAllRequest : ListRequest
 {
     init(pageNumber: Int)
 }
 
-public extension RESTListRequest
+public extension ListRequest
 {
     public static var pageSize : Int
     {
@@ -67,7 +67,7 @@ public extension RESTListRequest
     }
 }
 
-public extension RESTListRequest
+public extension ListRequest
 {
     var queryItems : [URLQueryItem]
     {
@@ -80,7 +80,7 @@ public extension RESTListRequest
     }
 }
 
-public extension RESTListAllRequest
+public extension ListAllRequest
 {    
     public func requestForNextPage() -> Self?
     {

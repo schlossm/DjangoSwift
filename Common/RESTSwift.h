@@ -6,7 +6,7 @@
 //  Copyright © 2017 Michael Schloss. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for RESTSwift.
 FOUNDATION_EXPORT double RESTSwiftVersionNumber;
