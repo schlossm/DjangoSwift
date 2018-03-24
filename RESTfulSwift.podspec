@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
 
-  s.name         = "RESTSwift"
+  s.name         = "RESTfulSwift"
   s.version      = "1.0"
   s.summary      = "An extendable, robust, and easy-to-use framework for communicating with RESTful endpoints."
 
   s.description  = <<-DESC
-		An extendable, robust, and easy-to-use framework for communicating with RESTful endpoints.
+		RESTSwift is a powerful framework for communicating with RESTful endpoints.  By being a protocol oriented framework, RESTSwift is highly extensible.
                    DESC
 
   s.homepage     = "https://github.com/schlossm/RESTSwift"
