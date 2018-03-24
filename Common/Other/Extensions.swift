@@ -11,7 +11,7 @@ import CoreData
 
 public extension String
 {
-    var urlEncoded : String
+    public var urlEncoded : String
     {
         let resultBytes = utf8.flatMap { $0.urlEncodedBytes }
         return String(bytes: resultBytes, encoding: .utf8) ?? self
