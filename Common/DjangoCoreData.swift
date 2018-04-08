@@ -1,6 +1,6 @@
 //
-//  RESTCoreData.swift
-//  RESTSwift
+//  DjangoCoreData.swift
+//  DjangoSwift
 //
 //  Created by Michael Schloss on 12/13/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -9,9 +9,9 @@
 import Foundation
 import CoreData
 
-public class RESTCoreData
+public class DjangoCoreData
 {
-    public static let shared = RESTCoreData()
+    public static let shared = DjangoCoreData()
     
     private var persistentContainer : NSPersistentContainer?
     public private(set) var managedObjectContext : NSManagedObjectContext?

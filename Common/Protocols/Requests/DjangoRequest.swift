@@ -1,6 +1,6 @@
 //
-//  RESTRequest.swift
-//  RESTSwift
+//  DjangoRequest.swift
+//  DjangoSwift
 //
 //  Created by Michael Schloss on 11/23/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -10,25 +10,25 @@ import Foundation
 import CoreData
 
 /**
- The basis of most REST requests in RESTSwift.
+ The basis of most Django requests in DjangoSwift.
  
  This protocol should only be adopted via one of the subtypes:
- * `RESTGETRequest` and subtypes
- * `RESTPUTRequest`
- * `RESTPOSTRequest`
- * `RESTPATCHRequest`
- * `RESTDELETERequest`
+ * `DjangoGETRequest` and subtypes
+ * `DjangoPUTRequest`
+ * `DjangoPOSTRequest`
+ * `DjangoPATCHRequest`
+ * `DjangoDELETERequest`
  
  Each request will, at minimum, contain two things:
- 1) A `Response typealias` that points to a class that conforms to `RESTResponse` or one of its subtypes
+ 1) A `Response typealias` that points to a class that conforms to `DjangoResponse` or one of its subtypes
  2) An `endpoint`.  This should **not** include the domain, only the path
 
- See `RESTRequest` subtypes for more information into each specific type of request
+ See `DjangoRequest` subtypes for more information into each specific type of request
 */
-public protocol RESTRequest
+public protocol DjangoRequest
 {
-    ///A class that conforms to `RESTResponse` or one of its subtypes
-    associatedtype Response : RESTResponse
+    ///A class that conforms to `DjangoResponse` or one of its subtypes
+    associatedtype Response : DjangoResponse
     
     ///The endpoint in which to point this request.  This should **not** contain the domain name, only the path
     var endpoint : String { get }
@@ -38,19 +38,19 @@ public protocol RESTRequest
  A GET request whos response will be a string
  
  Each request will, at minimum, contain two things:
- 1) A `Response typealias` that points to a class that conforms to `RESTStringResponse` or one of its subtypes
+ 1) A `Response typealias` that points to a class that conforms to `DjangoStringResponse` or one of its subtypes
  2) An `endpoint`.  This should **not** include the domain, only the path
  */
-public protocol RESTStringRequest
+public protocol DjangoStringRequest
 {
-    ///A class that conforms to `RESTStringResponse` or one of its subtypes
-    associatedtype Response : RESTStringResponse
+    ///A class that conforms to `DjangoStringResponse` or one of its subtypes
+    associatedtype Response : DjangoStringResponse
     
     ///The endpoint in which to point this request.  This should **not** contain the domain name, only the path
     var endpoint : String { get }
 }
 
 /**
- A convenience protocol to guarantee a response is of type `PersistableRESTResponse`
+ A convenience protocol to guarantee a response is of type `PersistableDjangoResponse`
  */
-public protocol PersistableRESTRequest : RESTRequest where Response : PersistableRESTResponse { }
+public protocol PersistableDjangoRequest : DjangoRequest where Response : PersistableDjangoResponse { }

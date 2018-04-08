@@ -1,6 +1,6 @@
 //
-//  RESTListRequest.swift
-//  RESTSwift
+//  DjangoListRequest.swift
+//  DjangoSwift
 //
 //  Created by Michael Schloss on 12/8/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -13,7 +13,7 @@ import Foundation
  
  In the event the list is too long for one page of objects, this request returns all objects from the specified page with the specified page size
  */
-public protocol RESTListRequest : RESTGETRequest
+public protocol DjangoListRequest : DjangoGETRequest
 {
     ///The key to sort by.  Defaults to "`id`"
     static var sortKey : String { get }
@@ -32,14 +32,14 @@ public protocol RESTListRequest : RESTGETRequest
 }
 
 /**
- A `RESTListRequest` that loads all pages of data
+ A `DjangoListRequest` that loads all pages of data
  */
-public protocol RESTListAllRequest : RESTListRequest
+public protocol DjangoListAllRequest : DjangoListRequest
 {
     init(pageNumber: Int)
 }
 
-public extension RESTListRequest
+public extension DjangoListRequest
 {
     public static var pageSize : Int
     {
@@ -67,7 +67,7 @@ public extension RESTListRequest
     }
 }
 
-public extension RESTListRequest
+public extension DjangoListRequest
 {
     var queryItems : [URLQueryItem]
     {
@@ -80,7 +80,7 @@ public extension RESTListRequest
     }
 }
 
-public extension RESTListAllRequest
+public extension DjangoListAllRequest
 {    
     public func requestForNextPage() -> Self?
     {

@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/michaelschloss/Documents/iOS Programming/DjangoSwift/RESTSwift.xcodeproj">
+      location = "self:DjangoSwift.xcodeproj">
    </FileRef>
 </Workspace>
