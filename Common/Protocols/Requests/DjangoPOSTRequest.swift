@@ -1,6 +1,6 @@
 //
-//  POSTRequest.swift
-//  RESTSwift
+//  DjangoPOSTRequest.swift
+//  DjangoSwift
 //
 //  Created by Michael Schloss on 12/8/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -13,7 +13,7 @@ import Foundation
  
  Allows for the specification of POST data
  */
-public protocol POSTRequest : RESTRequest
+public protocol DjangoPOSTRequest : DjangoRequest
 {
     var postData : JSON? { get }
 }
@@ -21,7 +21,7 @@ public protocol POSTRequest : RESTRequest
 /**
  A POST request whos response will be a string, not a JSON object
  */
-public protocol StringPOSTRequest : RESTStringRequest
+public protocol DjangoStringPOSTRequest : DjangoStringRequest
 {
     var postData : JSON? { get }
 }

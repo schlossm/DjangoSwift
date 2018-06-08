@@ -1,6 +1,6 @@
 //
 //  Extensions.swift
-//  RESTSwift
+//  DjangoSwift
 //
 //  Created by Michael Schloss on 11/23/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -11,7 +11,7 @@ import CoreData
 
 public extension String
 {
-    public var urlEncoded : String
+    var urlEncoded : String
     {
         let resultBytes = utf8.flatMap { $0.urlEncodedBytes }
         return String(bytes: resultBytes, encoding: .utf8) ?? self
@@ -49,7 +49,7 @@ public extension NSManagedObjectContext
     {
         guard let obj = NSEntityDescription.insertNewObject(forEntityName: T.entityName, into: self) as? T else
         {
-            fatalError("The request NSManagedObject could not be created")
+            fatalError("Unable to create an NSManagedObject of the requested type.")
         }
         return obj
     }
@@ -58,4 +58,8 @@ public extension NSManagedObjectContext
 public protocol ManagedObjectType : class
 {
     static var entityName : String { get }
+    static var defaultSortDescriptors : [NSSortDescriptor] { get }
+    static var defaultPredicate : NSPredicate { get }
+    var managedObjectContext : NSManagedObjectContext? { get }
 }
+

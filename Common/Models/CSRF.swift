@@ -1,6 +1,6 @@
 //
 //  CSRF.swift
-//  RESTSwift
+//  DjangoSwift
 //
 //  Created by Michael Schloss on 11/26/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-final class CSRFRequest : NSObject, RESTStringRequest
+final class CSRFRequest : NSObject, DjangoStringRequest
 {
-    var endpoint : String = RESTManager.csrfEndpoint
+    var endpoint : String = DjangoManager.csrfEndpoint
     var authToken : String?
     typealias Response = CSRFResponse
     
@@ -22,7 +22,7 @@ final class CSRFRequest : NSObject, RESTStringRequest
     }
 }
 
-final class CSRFResponse : RESTStringResponse
+final class CSRFResponse : DjangoStringResponse
 {
     let token : String
     
