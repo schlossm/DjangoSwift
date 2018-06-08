@@ -563,7 +563,7 @@ extension RESTManager
                 }.resume()
         }
         
-        if csrfToken == nil && RESTManager.requiresCSRFToken
+        if csrfToken == nil && RESTManager.requiresCSRFToken && !(request is CSRFRequest)
         {
             getCSRFToken(completion: { token in
                 if let token = token
