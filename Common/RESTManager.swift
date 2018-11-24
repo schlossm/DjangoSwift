@@ -1,6 +1,6 @@
 //
-//  DjangoManager.swift
-//  DjangoSwift
+//  RESTManager.swift
+//  RESTSwift
 //
 //  Created by Michael Schloss on 11/23/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -17,16 +17,16 @@ private enum HTTPMethod : String
     case delete = "DELETE"
 }
 
-public class DjangoManager
+public class RESTManager
 {
-    ///Returns the application's DjangoManager instance
-    public static let shared = DjangoManager()
+    ///Returns the application's RESTManager instance
+    public static let shared = RESTManager()
     
     ///Determines whether endpoints require a Cross-Site Request Forgery token to be transmitted with each `POST`.  Defaults to `true`
     public static var requiresCSRFToken = true
     
     /**
-     Set this property during `applicationDidFinishLaunching(_ application: UIApplication)` to initialize DjangoSwift's CoreData stack
+     Set this property during `applicationDidFinishLaunching(_ application: UIApplication)` to initialize RESTSwift's CoreData stack
      
      This variable should be set to your `xcdatamodeld`'s name (excluding ".xcdatamodeld")
      */
@@ -34,14 +34,14 @@ public class DjangoManager
     {
         didSet
         {
-            DjangoCoreData.shared.loadStore(withName: coreDataModelDName)
+            RESTCoreData.shared.loadStore(withName: coreDataModelDName)
         }
     }
     
     /**
-     If your Django endpoints require a CSRF token, this endpoint will be called in order to obtain the token
+     If your REST endpoints require a CSRF token, this endpoint will be called in order to obtain the token
      
-     This URL should respond with an HTML template that contains only `{% csrf_token %}`.  Django will render a proper CSRF token for DjangoSwift to use
+     This URL should respond with an HTML template that contains only `{% csrf_token %}`.  REST will render a proper CSRF token for RESTSwift to use
      
      Defaults to `csrf/`
      */
@@ -51,7 +51,7 @@ public class DjangoManager
     private var _baseURL : URL?
     
     /**
-     The Authorization token used to communicate with the Django endpoints.  Set this after successfully logging a user in
+     The Authorization token used to communicate with the REST endpoints.  Set this after successfully logging a user in
      
      All future requests will include the authorization token
      */
@@ -72,7 +72,7 @@ public class DjangoManager
     public static var extraHeaders = [String : String]()
     
     /**
-     The base URL on which all Django requests will build from.  This should be set prior to initiating any requests.
+     The base URL on which all REST requests will build from.  This should be set prior to initiating any requests.
      
      If this is not set prior to a request being generated, undefined behavior will occur
      
@@ -86,7 +86,7 @@ public class DjangoManager
         {
             if _baseURL != nil
             {
-                print("[WARNING]: You should not set DjangoManager's baseURL property more than once during application lifetime.  This can lead to requests pointing to an incorrect URL.")
+                print("[WARNING]: You should not set RESTManager's baseURL property more than once during application lifetime.  This can lead to requests pointing to an incorrect URL.")
             }
             _baseURL = newValue
         }
@@ -97,7 +97,7 @@ public class DjangoManager
             {
                 return baseURL
             }
-            print("[ERROR]: DjangoManager does not have a `baseURL` set!  This will lead to undefined behavior and should be immediately corrected")
+            print("[ERROR]: RESTManager does not have a `baseURL` set!  This will lead to undefined behavior and should be immediately corrected")
             return URL(fileURLWithPath: "/")
         }
     }
@@ -112,17 +112,17 @@ public class DjangoManager
         request.httpMethod = method.rawValue
         if let token = authToken
         {
-            request.setValue("\(DjangoManager.tokenName) \(token.urlEncoded)", forHTTPHeaderField: "Authorization")
+            request.setValue("\(RESTManager.tokenName) \(token.urlEncoded)", forHTTPHeaderField: "Authorization")
         }
         if let csrfKey = csrfToken
         {
             request.setValue(csrfKey.urlEncoded, forHTTPHeaderField: "X-CSRFToken")
         }
-        for header in DjangoManager.extraHeaders
+        for header in RESTManager.extraHeaders
         {
             request.setValue(header.value, forHTTPHeaderField: header.key)
         }
-        request.setValue(DjangoManager.shared.baseURL.absoluteString, forHTTPHeaderField: "Referer")
+        request.setValue(RESTManager.shared.baseURL.absoluteString, forHTTPHeaderField: "Referer")
         return request
     }
     
@@ -146,22 +146,22 @@ public class DjangoManager
 
 //MARK: - REST
 
-extension DjangoManager
+extension RESTManager
 {
     //MARK: - GET
     
     /**
-     Initiates a GET request using the provided `DjangoStringRequest` object.  This endpoint is to be used when the response from your server will be a String
+     Initiates a GET request using the provided `RESTStringRequest` object.  This endpoint is to be used when the response from your server will be a String
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoStringRequest` object containing the information about this request
+     - Parameter request: An `RESTStringRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `200`
-     - Parameter completion: A closure that accepts an `DjangoStringResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An `DjangoStringResponse` object containing the retrieved String, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTStringResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An `RESTStringResponse` object containing the retrieved String, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func get<T : DjangoStringRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func get<T : RESTStringRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .get)
         print("GET \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
@@ -190,17 +190,17 @@ extension DjangoManager
     }
     
     /**
-     Initiates a GET request using the provided `DjangoGETRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a GET request using the provided `RESTGETRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoGETRequest` object containing the information about this request
+     - Parameter request: An `RESTGETRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
-     - Parameter completion: A closure that accepts an `DjangoGETResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An `DjangoGETResponse` object containing the retrieved object, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTGETResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An `RESTGETResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func get<T : DjangoGETRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func get<T : RESTGETRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         let initialURL = baseURL.appendingPathComponent(request.endpoint)
         guard var comps = URLComponents(url: initialURL, resolvingAgainstBaseURL: true) else
@@ -226,17 +226,17 @@ extension DjangoManager
     }
     
     /**
-     Initiates a GET request using the provided `DjangoListRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a GET request using the provided `RESTListRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoListRequest` object containing the information about this request
+     - Parameter request: An `RESTListRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
-     - Parameter completion: A closure that accepts an `DjangoListRequest` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An array of `DjangoListRequest` objects containing the retrieved objects, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTListRequest` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An array of `RESTListRequest` objects containing the retrieved objects, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func getList<T : DjangoListRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void)
+    public func getList<T : RESTListRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void)
     {
         let initialURL = baseURL.appendingPathComponent(request.endpoint)
         guard var comps = URLComponents(url: initialURL, resolvingAgainstBaseURL: true) else
@@ -261,17 +261,17 @@ extension DjangoManager
     //MARK: - POST
     
     /**
-     Initiates a POST request using the provided `DjangoStringPOSTRequest` object.  This endpoint is to be used when the response from your server will be a String
+     Initiates a POST request using the provided `RESTStringPOSTRequest` object.  This endpoint is to be used when the response from your server will be a String
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoStringPOSTRequest` object containing the information about this request
+     - Parameter request: An `RESTStringPOSTRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `200`
-     - Parameter completion: A closure that accepts an `DjangoStringResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An `DjangoStringResponse` object containing the retrieved String, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTStringResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An `RESTStringResponse` object containing the retrieved String, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func post<T : DjangoStringPOSTRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func post<T : RESTStringPOSTRequest>(request: T, acceptedStatusCodes: [Int] = [200], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .post)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -307,7 +307,7 @@ extension DjangoManager
                 }.resume()
         }
         
-        if csrfToken == nil && DjangoManager.requiresCSRFToken
+        if csrfToken == nil && RESTManager.requiresCSRFToken
         {
             getCSRFToken(completion: { token in
                 if let token = token
@@ -324,17 +324,17 @@ extension DjangoManager
     }
     
     /**
-     Initiates a POST request using the provided `DjangoPOSTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a POST request using the provided `RESTPOSTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoPOSTRequest` object containing the information about this request
+     - Parameter request: An `RESTPOSTRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
-     - Parameter completion: A closure that accepts an `DjangoPOSTResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An `DjangoPOSTResponse` object containing the retrieved object, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTPOSTResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An `RESTPOSTResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func post<T : DjangoPOSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func post<T : RESTPOSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .post)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -346,17 +346,17 @@ extension DjangoManager
     //MARK: - PUT
     
     /**
-     Initiates a PUT request using the provided `DjangoPUTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a PUT request using the provided `RESTPUTRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoPUTRequest` object containing the information about this request
+     - Parameter request: An `RESTPUTRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
-     - Parameter completion: A closure that accepts an `DjangoPUTResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An `DjangoPUTResponse` object containing the retrieved object, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTPUTResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An `RESTPUTResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func put<T : DjangoPUTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func put<T : RESTPUTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .put)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -368,17 +368,17 @@ extension DjangoManager
     //MARK: - PATCH
     
     /**
-     Initiates a PATCH request using the provided `DjangoPATCHRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
+     Initiates a PATCH request using the provided `RESTPATCHRequest` object.  This endpoint is to be used when the response from your server will be a JSON object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoPATCHRequest` object containing the information about this request
+     - Parameter request: An `RESTPATCHRequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
-     - Parameter completion: A closure that accepts an `DjangoPATCHResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An `DjangoPATCHResponse` object containing the retrieved object, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTPATCHResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An `RESTPATCHResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func patch<T : DjangoPATCHRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func patch<T : RESTPATCHRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         var urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .patch)
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -390,17 +390,17 @@ extension DjangoManager
     //MARK: - DELETE
     
     /**
-     Initiates a DELETE request using the provided `DjangoDELETERequest` object
+     Initiates a DELETE request using the provided `RESTDELETERequest` object
      
      This method is asynchronous, and will return control to your application immediately while processing the request
      
-     - Parameter request: An `DjangoDELETERequest` object containing the information about this request
+     - Parameter request: An `RESTDELETERequest` object containing the information about this request
      - Parameter acceptedStatusCodes: An array of Integers defining which HTTP status codes this request should accept as valid.  Defaults to `[200 ... 299]`
-     - Parameter completion: A closure that accepts an `DjangoDELETEResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
-     - Parameter response: An `DjangoDELETEResponse` object containing the retrieved object, if any.  This can be `nil`
+     - Parameter completion: A closure that accepts an `RESTDELETEResponse` object and an Integer.  This closure will be called when all data pertaining to the request has been retrieved and processed
+     - Parameter response: An `RESTDELETEResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func delete<T : DjangoDELETERequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    public func delete<T : RESTDELETERequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         let urlRequest = self.request(for: baseURL.appendingPathComponent(request.endpoint), method: .delete)
         print("DELETE \(baseURL.appendingPathComponent(request.endpoint).absoluteString)")
@@ -410,9 +410,9 @@ extension DjangoManager
 
 //MARK: - Processing
 
-extension DjangoManager
+extension RESTManager
 {
-    private func perform<T : DjangoRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
+    private func perform<T : RESTRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: T.Response?, _ statusCode: Int) -> Void)
     {
         let completion : (String?) -> Void = { token in
             var urlRequest = urlRequest
@@ -461,7 +461,7 @@ extension DjangoManager
                 }
             }.resume()
         }
-        if csrfToken == nil && DjangoManager.requiresCSRFToken
+        if csrfToken == nil && RESTManager.requiresCSRFToken
         {
             getCSRFToken(completion: { token in
                 if let token = token
@@ -520,8 +520,7 @@ extension DjangoManager
                 }
                 }.resume()
         }
-        
-        if csrfToken == nil && RESTManager.requiresCSRFToken && !(request is CSRFRequest)
+        if csrfToken == nil && RESTManager.requiresCSRFToken && !(request is CSRFRequest)=
         {
             getCSRFToken(completion: { token in
                 if let token = token
@@ -540,7 +539,7 @@ extension DjangoManager
 
 //MARK: - CSRF
 
-private extension DjangoManager
+private extension RESTManager
 {
     private func getCSRFToken(completion: @escaping (String?) -> Void)
     {

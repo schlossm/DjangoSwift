@@ -1,6 +1,6 @@
 //
-//  DjangoGETRequest.swift
-//  DjangoSwift
+//  RESTGETRequest.swift
+//  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -13,7 +13,7 @@ import Foundation
  
  Allows for the specification of URI key-value pairs
  */
-public protocol DjangoGETRequest : DjangoRequest
+public protocol RESTGETRequest : RESTRequest
 {
     ///A dictionary specifying URI key-value pairs.  Defaults to `nil`
     var queryParameters : [String : String]? { get }
@@ -22,14 +22,14 @@ public protocol DjangoGETRequest : DjangoRequest
 /**
  Convenience GET request that denotes a single object should be expected from the specified endpoint
  */
-public protocol DjangoSingleObjectRequest : DjangoGETRequest { }
+public protocol RESTSingleObjectRequest : RESTGETRequest { }
 
-public extension DjangoGETRequest
+public extension RESTGETRequest
 {
     var queryParameters : [String: String]? { return nil }
 }
 
-extension DjangoGETRequest
+extension RESTGETRequest
 {
     var queryItems : [URLQueryItem]
     {

@@ -1,6 +1,6 @@
 //
-//  DjangoResponse.swift
-//  DjangoSwift
+//  RESTResponse.swift
+//  RESTSwift
 //
 //  Created by Michael Schloss on 12/8/17.
 //  Copyright © 2017 Michael Schloss. All rights reserved.
@@ -10,38 +10,38 @@ import Foundation
 import CoreData
 
 /**
- The basis for most Django responses in DjangoSwift
+ The basis for most REST responses in RESTSwift
  
  This protocol can be adpoted as is, or via one of the subtypes:
- * `PersistableDjangoResponse`
+ * `PersistableRESTResponse`
  
- Each DjangoResponse must contain a method `fromResponse(json: JSON)` that will return `nil` or an instance of `Self` depending on the validity of the given JSON data
+ Each RESTResponse must contain a method `fromResponse(json: JSON)` that will return `nil` or an instance of `Self` depending on the validity of the given JSON data
  */
-public protocol DjangoResponse
+public protocol RESTResponse
 {
     ///Returns `nil` or an instance of `Self` depending on validity of the given JSON data
-    ///- Parameter json: A JSON object received from processing a `DjangoRequest` or subtype
+    ///- Parameter json: A JSON object received from processing a `RESTRequest` or subtype
     static func fromResponse(json: JSON) -> Self?
 }
 
 /**
- An Django response who's response is a string
+ An REST response who's response is a string
  
- Each DjangoStringResponse must implement `fromResponse(string: String)` that will return `nil` or an instance of `Self` depending on the validity of the given string
+ Each RESTStringResponse must implement `fromResponse(string: String)` that will return `nil` or an instance of `Self` depending on the validity of the given string
  */
-public protocol DjangoStringResponse
+public protocol RESTStringResponse
 {
     ///Returns `nil` or an instance of `Self` depending on validity of the given string
-    ///- Parameter string: A String object received from processing a `DjangoStringRequest`
+    ///- Parameter string: A String object received from processing a `RESTStringRequest`
     static func fromResponse(string: String) -> Self?
 }
 
 /**
- An Django response who's returned JSON data should be persisted to CoreData
+ An REST response who's returned JSON data should be persisted to CoreData
  
- Each `PersistableDjangoResponse` must contain a typealias to the corresponding `NSManagedObject` subclass as well as an implementation of `copyProperties(to record: Model)` method
+ Each `PersistableRESTResponse` must contain a typealias to the corresponding `NSManagedObject` subclass as well as an implementation of `copyProperties(to record: Model)` method
  */
-public protocol PersistableDjangoResponse : DjangoResponse
+public protocol PersistableRESTResponse : RESTResponse
 {
     ///A typealias to a Core Data model
     associatedtype Model : NSManagedObject
