@@ -520,7 +520,7 @@ extension RESTManager
                 }
                 }.resume()
         }
-        if csrfToken == nil && RESTManager.requiresCSRFToken && !(request is CSRFRequest)=
+        if csrfToken == nil && RESTManager.requiresCSRFToken && !(request is CSRFRequest)
         {
             getCSRFToken(completion: { token in
                 if let token = token
@@ -533,6 +533,84 @@ extension RESTManager
         else
         {
             completion(nil)
+        }
+    }
+    
+    private func perform<T : RESTListRequest>(request: T, urlRequest: URLRequest, withAcceptedStatusCodes acceptedStatusCodes: [Int], completion: @escaping (_ response: [T.Response]?, _ statusCode: Int) -> Void, previousResults: [T.Response]? = nil, loadAllPages: Bool = true)
+    {
+        func parse(results: [JSON], statusCode: Int) -> [T.Response]?
+        {
+            var parsedResults : [T.Response] = previousResults ?? []
+            for result in results
+            {
+                guard let parsedResult = T.Response.fromResponse(json: result) else { return nil }
+                parsedResults.append(parsedResult)
+            }
+            return parsedResults
+        }
+        let csrfCompletion : (String?) -> Void = { token in
+            var urlRequest = urlRequest
+            if let token = token
+            {
+                urlRequest.addValue(token, forHTTPHeaderField: "X-CSRFToken")
+            }
+            URLSession.shared.dataTask(with: urlRequest) { responseData, response, error in
+                DispatchQueue.main.async {
+                    let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+                    guard acceptedStatusCodes.contains(statusCode) else
+                    {
+                        self.printDebugInformation(forResponse: response, responseData: responseData, withRequest: urlRequest)
+                        completion(nil, statusCode)
+                        return
+                    }
+                    if let error = error
+                    {
+                        print(error)
+                        completion(nil, statusCode)
+                        return
+                    }
+                    if let data = responseData
+                    {
+                        let json = try! JSON(data: data)
+                        guard let results = json["results"].array else
+                        {
+                            completion(nil, statusCode)
+                            return
+                        }
+                        let parsedResults = parse(results: results, statusCode: statusCode)
+                        if loadAllPages, let nextURLString = json["next"].string, let nextURL = URL(string: nextURLString)
+                        {
+                            guard let newRequest = request.requestForNextPage() else
+                            {
+                                completion(nil, statusCode)
+                                return
+                            }
+                            let urlRequest = self.request(for: nextURL, method: .get)
+                            self.perform(request: newRequest, urlRequest: urlRequest, withAcceptedStatusCodes: acceptedStatusCodes, completion: completion, previousResults: parsedResults, loadAllPages: loadAllPages)
+                        }
+                        else
+                        {
+                            completion(parsedResults, statusCode)
+                        }
+                        return
+                    }
+                    completion(nil, statusCode)
+                }
+            }.resume()
+        }
+        if csrfToken == nil && RESTManager.requiresCSRFToken
+        {
+            getCSRFToken(completion: { token in
+                if let token = token
+                {
+                    self.csrfToken = token
+                }
+                csrfCompletion(token)
+            })
+        }
+        else
+        {
+            csrfCompletion(nil)
         }
     }
 }
