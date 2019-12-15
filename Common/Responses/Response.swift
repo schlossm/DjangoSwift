@@ -19,11 +19,12 @@ import CoreData
  */
 public protocol RESTResponse
 {
+    associatedtype RequestType: RESTRequest where RequestType.ResponseType == Self
     associatedtype DecodeType : Decodable
     
     ///Returns `nil` or an instance of `Self` depending on validity of the given JSON data
     ///- Parameter json: A JSON object received from processing a `RESTRequest` or subtype
-    static func from(response: DecodeType) -> Self?
+    static func from(response: DecodeType, request: RequestType) -> Self?
     
     static func from(raw: Data) -> Self?
 }
@@ -38,5 +39,7 @@ public extension RESTResponse
 
 public protocol RESTFileDownloadResponse
 {
-    static func from(response: URL) -> Self?
+    associatedtype RequestType: RESTFileDownloadRequest where RequestType.ResponseType == Self
+    
+    static func from(response: URL, request: RequestType) -> Self?
 }

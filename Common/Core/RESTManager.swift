@@ -21,9 +21,9 @@ extension RESTManager
 {
     public struct Error : Swift.Error
     {
-        let code: Int
-        let domain: String
-        let description: String
+        public let code: Int
+        public let domain: String
+        public let description: String
         
         public static let urlComponentsError = Error(code: 30001, domain: "com.michaelschloss.restswift", description: "Could not form URLComponents object.")
         public static let urlComponentsURLError = Error(code: 30002, domain: "com.michaelschloss.restswift", description: "Could not form URL from URLComponents object.")
@@ -148,8 +148,8 @@ public class RESTManager
 
 extension RESTManager
 {
-    public typealias RESTCompletion<T : RESTRequest> = (Result<T.Response, Error>, Int) -> Void
-    public typealias FileDownloadCompletion<T : RESTFileDownloadRequest> = (Result<T.Response, Error>, Int) -> Void
+    public typealias RESTCompletion<T : RESTRequest> = (Result<T.ResponseType, Error>, Int) -> Void
+    public typealias FileDownloadCompletion<T : RESTFileDownloadRequest> = (Result<T.ResponseType, Error>, Int) -> Void
     
     //MARK: - GET
     
@@ -288,12 +288,12 @@ extension RESTManager
         case .success(let data):
             do
             {
-                let object = try JSONDecoder().decode(T.Response.DecodeType.self, from: data)
-                if let response = T.Response.from(response: object)
+                let object = try JSONDecoder().decode(T.ResponseType.DecodeType.self, from: data)
+                if let response = T.ResponseType.from(response: object, request: request)
                 {
                     completion(.success(response), statusCode)
                 }
-                else if let response = T.Response.from(raw: data)
+                else if let response = T.ResponseType.from(raw: data)
                 {
                     completion(.success(response), statusCode)
                 }
@@ -329,7 +329,7 @@ extension RESTManager
             {
                 let newURL = FileManager.default.temporaryDirectory.appendingPathComponent("rs-downloaded-\(UUID().uuidString)")
                 try FileManager.default.copyItem(at: url, to: newURL)
-                if let response = T.Response.from(response: newURL)
+                if let response = T.ResponseType.from(response: newURL, request: request)
                 {
                     completion(.success(response), statusCode)
                 }

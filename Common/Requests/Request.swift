@@ -19,7 +19,7 @@ import Foundation
  * `RESTDELETERequest`
  
  Each request will, at minimum, contain two things:
- 1) A `Response typealias` that points to a class that conforms to `RESTResponse` or one of its subtypes
+ 1) A `ResponseType typealias` that points to a class that conforms to `RESTResponse` or one of its subtypes
  2) An `endpoint`.  This should **not** include the domain, only the path
 
  See `RESTRequest` subtypes for more information into each specific type of request
@@ -27,7 +27,7 @@ import Foundation
 public protocol RESTRequest
 {
     ///A class that conforms to `RESTResponse` or one of its subtypes
-    associatedtype Response : RESTResponse
+    associatedtype ResponseType : RESTResponse where ResponseType.RequestType == Self
     
     ///The endpoint in which to point this request.  This should **not** contain the domain name, only the path
     var endpoint : String { get }
@@ -53,13 +53,13 @@ extension RESTRequest
  Defines a request specific to downloading files.
  
  Each request will, at minimum, contain two things:
- 1) A `Response typealias` that points to a class that conforms to `RESTFileDownloadResponse`
+ 1) A `ResponseType typealias` that points to a class that conforms to `RESTFileDownloadResponse`
  2) An `endpoint`.  This should **not** include the domain, only the path
  */
 public protocol RESTFileDownloadRequest
 {
     ///A class that conforms to `RESTResponse` or one of its subtypes
-    associatedtype Response : RESTFileDownloadResponse
+    associatedtype ResponseType : RESTFileDownloadResponse where ResponseType.RequestType == Self
     
     ///The endpoint in which to point this request.  This should **not** contain the domain name, only the path
     var endpoint : String { get }
