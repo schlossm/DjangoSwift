@@ -20,7 +20,7 @@ struct TestUserModel : Decodable
 
 struct RESTTestGETRequest : RESTGETRequest
 {
-    typealias Response = RESTTestGETResponse
+    typealias ResponseType = RESTTestGETResponse
     
     let endpoint = "example/user/"
 }
@@ -28,6 +28,7 @@ struct RESTTestGETRequest : RESTGETRequest
 struct RESTTestGETResponse : RESTResponse
 {
     typealias DecodeType = [String : TestUserModel]
+    typealias RequestType = RESTTestGETRequest
     
     let model: DecodeType
     
@@ -36,7 +37,8 @@ struct RESTTestGETResponse : RESTResponse
         self.model = model
     }
     
-    static func from(response: DecodeType) -> RESTTestGETResponse? {
+    static func from(response: DecodeType, request: RequestType) -> RESTTestGETResponse?
+    {
         return RESTTestGETResponse(model: response)
     }
 }

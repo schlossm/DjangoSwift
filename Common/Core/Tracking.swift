@@ -13,13 +13,13 @@ typealias ProcessorFileDownloadCompletion = (Result<URL, Error>, Int) -> Void
 
 class ProcessorModel
 {
-    let urlSessionTask: URLSessionTask
+    let urlSessionTask: URLSessionTaskProtocol
     let progress = Progress()
     
     var didSetTotalUnitCountUpload = false
     var didSetTotalDownloadUnitCount = false
     
-    init(task: URLSessionTask)
+    init(task: URLSessionTaskProtocol)
     {
         urlSessionTask = task
     }
@@ -30,7 +30,7 @@ class ProcessorRESTModel : ProcessorModel
     var completion: ProcessorRESTModelCompletion
     var data = Data()
     
-    init(task: URLSessionTask, completion: @escaping ProcessorRESTModelCompletion) {
+    init(task: URLSessionTaskProtocol, completion: @escaping ProcessorRESTModelCompletion) {
         self.completion = completion
         super.init(task: task)
     }
@@ -40,7 +40,7 @@ class ProcessorFileDownloadModel : ProcessorModel
 {
     var completion: ProcessorFileDownloadCompletion
     
-    init(task: URLSessionTask, completion: @escaping ProcessorFileDownloadCompletion) {
+    init(task: URLSessionTaskProtocol, completion: @escaping ProcessorFileDownloadCompletion) {
         self.completion = completion
         super.init(task: task)
     }

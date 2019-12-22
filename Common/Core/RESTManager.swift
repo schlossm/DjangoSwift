@@ -41,9 +41,15 @@ public class RESTManager
     ///Returns the application's RESTManager instance
     public static let shared = RESTManager(configuration: URLSessionConfiguration.default)
     
+    /// A dictionary of String to URL values.
+    ///
+    /// The `String` should be the endpoint.  The  `URL` should be a `Bundle` URL loading a JSON file
+    public static var mockConfiguration: [String: URL] = [:]
+    
     public var configuration: URLSessionConfiguration
     
-    private lazy var processor = Processor(configuration: configuration, controller: self)
+    private lazy var urlSessionProcessor = Processor<URLSession>(configuration: configuration, controller: self)
+    private lazy var mockURLSessionProcessor = Processor<MockURLSession>(configuration: configuration, controller: self)
     
     /**
      The Authorization token used to communicate with the REST endpoints.  Set this after successfully logging a user in
@@ -142,6 +148,10 @@ public class RESTManager
         
         return finalURL
     }
+    
+    private func isInMockMode() -> Bool {
+        return !RESTManager.mockConfiguration.isEmpty
+    }
 }
 
 //MARK: - REST
@@ -170,8 +180,14 @@ extension RESTManager
         print("GET \(finalURL.absoluteString)")
         
         let urlRequest = self.request(for: finalURL, method: .get)
-        processor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
-            self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+        if isInMockMode() {
+            mockURLSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
+        } else {
+            urlSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
         }
     }
 
@@ -194,8 +210,14 @@ extension RESTManager
         var urlRequest = self.request(for: finalURL, method: .post)
         urlRequest.httpBody = request.postData
         print("POST \(finalURL)")
-        try processor.post(urlRequest: urlRequest, progress: &progress) { result, statusCode in
-            self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+        if isInMockMode() {
+            try mockURLSessionProcessor.post(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
+        } else {
+            try urlSessionProcessor.post(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
         }
     }
     
@@ -218,8 +240,14 @@ extension RESTManager
         var urlRequest = self.request(for: finalURL, method: .put)
         urlRequest.httpBody = request.putData
         print("PUT \(finalURL)")
-        try processor.put(urlRequest: urlRequest, progress: &progress) { result, statusCode in
-            self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+        if isInMockMode() {
+            try mockURLSessionProcessor.put(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
+        } else {
+            try urlSessionProcessor.put(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
         }
     }
     
@@ -242,8 +270,14 @@ extension RESTManager
         var urlRequest = self.request(for: finalURL, method: .patch)
         urlRequest.httpBody = request.patchData
         print("PATCH \(finalURL)")
-        try processor.patch(urlRequest: urlRequest, progress: &progress) { result, statusCode in
-            self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+        if isInMockMode() {
+            try mockURLSessionProcessor.patch(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
+        } else {
+            try urlSessionProcessor.patch(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
         }
     }
     
@@ -265,8 +299,14 @@ extension RESTManager
         let finalURL = try buildURL(from: request)
         let urlRequest = self.request(for: finalURL, method: .delete)
         print("DELETE \(finalURL)")
-        processor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
-            self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+        if isInMockMode() {
+            mockURLSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
+        } else {
+            urlSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+                self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
+            }
         }
     }
 }

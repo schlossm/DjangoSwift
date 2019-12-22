@@ -16,6 +16,7 @@ class RESTSwiftTests : XCTestCase
     {
         super.setUp()
         RESTSwiftTests.session.baseURL = URL(string: "https://staging.mascomputech.com")!
+        RESTManager.mockConfiguration = ["/example/user": Bundle(for: RESTSwiftTests.self).url(forResource: "exampleUser", withExtension: "json")!]
     }
     
     func testGET() throws
