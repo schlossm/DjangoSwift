@@ -105,9 +105,12 @@ class Processor<T: URLSessionProtocol> : NSObject, URLSessionTaskDelegateProtoco
         
         let task: URLSessionTaskProtocol = session.sessionDataTask(with: urlRequest)
         let model = ProcessorRESTModel(task: task, completion: completion)
-        if #available(iOS 11.0, *) {
+        if #available(iOS 11.0, *)
+        {
             progress = task.progress
-        } else {
+        }
+        else
+        {
             progress = model.progress
         }
         _Tracker.shared.append(model)
@@ -118,9 +121,12 @@ class Processor<T: URLSessionProtocol> : NSObject, URLSessionTaskDelegateProtoco
     {
         let task: URLSessionTaskProtocol = session.sessionUploadTask(with: urlRequest, fromFile: localURL)
         let model = ProcessorRESTModel(task: task, completion: completion)
-        if #available(iOS 11.0, *) {
+        if #available(iOS 11.0, *)
+        {
             progress = task.progress
-        } else {
+        }
+        else
+        {
             progress = model.progress
         }
         _Tracker.shared.append(model)
@@ -131,9 +137,12 @@ class Processor<T: URLSessionProtocol> : NSObject, URLSessionTaskDelegateProtoco
     {
         let task: URLSessionTaskProtocol = session.sessionDownloadTask(with: urlRequest)
         let model = ProcessorFileDownloadModel(task: task, completion: completion)
-        if #available(iOS 11.0, *) {
+        if #available(iOS 11.0, *)
+        {
             progress = task.progress
-        } else {
+        }
+        else
+        {
             progress = model.progress
         }
         _Tracker.shared.append(model)

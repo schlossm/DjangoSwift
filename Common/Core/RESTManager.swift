@@ -111,9 +111,10 @@ public class RESTManager
     {
         set
         {
-            if _baseURL != nil
+            if _baseURL != nil, !printedBaseURLSetWarning
             {
-                print("[WARNING]: You should not set RESTManager's baseURL property more than once during application lifetime.  This can lead to requests pointing to an incorrect URL.")
+                printedBaseURLSetWarning = true
+                print("[WARNING]: You should not set RESTManager's baseURL property more than once during application lifetime.  This can lead to requests pointing to an incorrect URL.  This will only be logged once")
             }
             _baseURL = newValue
         }
@@ -124,12 +125,17 @@ public class RESTManager
             {
                 return baseURL
             }
-            print("[ERROR]: RESTManager does not have a `baseURL` set!  This will lead to undefined behavior and should be immediately corrected")
+            if !printedBaseURLGetWarning {
+                printedBaseURLGetWarning = true
+                print("[ERROR]: RESTManager does not have a `baseURL` set!  This will lead to undefined behavior and should be immediately corrected.  This will only be logged once")
+            }
             return URL(fileURLWithPath: "/")
         }
     }
     
     private var _baseURL : URL?
+    private var printedBaseURLSetWarning = false
+    private var printedBaseURLGetWarning = false
     
     public init(configuration: URLSessionConfiguration = URLSessionConfiguration.default)
     {
@@ -175,7 +181,8 @@ public class RESTManager
         return finalURL
     }
     
-    private func isInMockMode() -> Bool {
+    private func isInMockMode() -> Bool
+    {
         return !RESTManager.mockConfiguration.isEmpty
     }
 }
@@ -210,13 +217,15 @@ extension RESTManager
             mockURLSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
-        } else {
+        }
+        else
+        {
             urlSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
     }
-
+    
     //MARK: - POST
     
     /**
@@ -240,7 +249,9 @@ extension RESTManager
             try mockURLSessionProcessor.post(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
-        } else {
+        }
+        else
+        {
             try urlSessionProcessor.post(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
@@ -270,7 +281,9 @@ extension RESTManager
             try mockURLSessionProcessor.put(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
-        } else {
+        }
+        else
+        {
             try urlSessionProcessor.put(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
@@ -300,7 +313,9 @@ extension RESTManager
             try mockURLSessionProcessor.patch(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
-        } else {
+        }
+        else
+        {
             try urlSessionProcessor.patch(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
@@ -329,7 +344,9 @@ extension RESTManager
             mockURLSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
-        } else {
+        }
+        else
+        {
             urlSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }

@@ -8,7 +8,8 @@
 
 import Foundation
 
-@objc protocol URLSessionTaskDelegateProtocol : URLSessionTaskDelegate {
+@objc protocol URLSessionTaskDelegateProtocol : URLSessionTaskDelegate
+{
     @available(iOS 7.0, *)
     @objc optional func urlSession(_ session: URLSessionProtocol, task: NSObject & URLSessionTaskProtocol, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
     
@@ -19,12 +20,14 @@ import Foundation
     @objc optional func urlSession(_ session: URLSessionProtocol, task: NSObject & URLSessionTaskProtocol, didCompleteWithError error: Error?)
 }
 
-@objc protocol URLSessionDataDelegateProtocol : URLSessionTaskDelegateProtocol, URLSessionDataDelegate {
+@objc protocol URLSessionDataDelegateProtocol : URLSessionTaskDelegateProtocol, URLSessionDataDelegate
+{
     @available(iOS 7.0, *)
     @objc optional func urlSession(_ session: URLSessionProtocol, dataTask: NSObject & URLSessionTaskProtocol, didReceive data: Data)
 }
 
-@objc protocol URLSessionDownloadDelegateProtocol : URLSessionTaskDelegateProtocol, URLSessionDownloadDelegate {
+@objc protocol URLSessionDownloadDelegateProtocol : URLSessionTaskDelegateProtocol, URLSessionDownloadDelegate
+{
     @available(iOS 7.0, *)
     func urlSession(_ session: URLSessionProtocol, downloadTask: NSObject & URLSessionTaskProtocol, didFinishDownloadingTo location: URL)
     
@@ -32,7 +35,8 @@ import Foundation
     @objc optional func urlSession(_ session: URLSessionProtocol, downloadTask: NSObject & URLSessionTaskProtocol, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
 }
 
-@objc protocol URLSessionTaskProtocol: NSObjectProtocol {
+@objc protocol URLSessionTaskProtocol: NSObjectProtocol
+{
     @available(iOS, introduced: 11.0)
     var progress: Progress { get }
     
@@ -41,7 +45,8 @@ import Foundation
     func resume()
 }
 
-@objc protocol URLSessionProtocol: NSObjectProtocol {
+@objc protocol URLSessionProtocol: NSObjectProtocol
+{
     var delegate: URLSessionDelegate? { get }
     var delegateQueue: OperationQueue { get }
     
@@ -56,22 +61,27 @@ import Foundation
 
 extension URLSessionTask: URLSessionTaskProtocol { }
 
-extension URLSession: URLSessionProtocol {
-    static func _session(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?) -> Self {
+extension URLSession: URLSessionProtocol
+{
+    static func _session(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?) -> Self
+    {
         return URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue) as! Self
     }
     
-    func sessionDataTask(with request: URLRequest) -> URLSessionTaskProtocol {
+    func sessionDataTask(with request: URLRequest) -> URLSessionTaskProtocol
+    {
         let sessionTask: URLSessionDataTask = self.dataTask(with: request)
         return sessionTask
     }
     
-    func sessionUploadTask(with request: URLRequest, fromFile fileURL: URL) -> URLSessionTaskProtocol {
+    func sessionUploadTask(with request: URLRequest, fromFile fileURL: URL) -> URLSessionTaskProtocol
+    {
         let sessionTask: URLSessionUploadTask = self.uploadTask(with: request, fromFile: fileURL)
         return sessionTask
     }
     
-    func sessionDownloadTask(with request: URLRequest) -> URLSessionTaskProtocol {
+    func sessionDownloadTask(with request: URLRequest) -> URLSessionTaskProtocol
+    {
         let sessionTask: URLSessionDownloadTask = self.downloadTask(with: request)
         return sessionTask
     }

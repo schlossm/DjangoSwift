@@ -8,7 +8,8 @@
 
 import Foundation
 
-class MockURLSessionDataTask: NSObject, URLSessionTaskProtocol {
+class MockURLSessionDataTask: NSObject, URLSessionTaskProtocol
+{
     var progress = Progress()
     private var attachedSession: URLSessionProtocol
     var response: URLResponse? = nil
@@ -25,7 +26,8 @@ class MockURLSessionDataTask: NSObject, URLSessionTaskProtocol {
     }
     
     func resume() {
-        guard let jsonURL = jsonURL, let data = try? Data(contentsOf: jsonURL) else {
+        guard let jsonURL = jsonURL, let data = try? Data(contentsOf: jsonURL) else
+        {
             response = HTTPURLResponse(url: self.jsonURL ?? URL(fileURLWithPath: ""), statusCode: 400, httpVersion: "2.0", headerFields: nil)
             delegate?.urlSession?(attachedSession, task: self, didCompleteWithError: NSError(domain: "com.restswift.mock", code: -1, userInfo: nil))
             return
@@ -36,7 +38,8 @@ class MockURLSessionDataTask: NSObject, URLSessionTaskProtocol {
     }
 }
 
-class MockURLSessionDownloadTask: NSObject, URLSessionTaskProtocol {
+class MockURLSessionDownloadTask: NSObject, URLSessionTaskProtocol
+{
     var progress = Progress()
     var response: URLResponse? = nil
     private var attachedSession: URLSessionProtocol
@@ -57,34 +60,41 @@ class MockURLSessionDownloadTask: NSObject, URLSessionTaskProtocol {
 
 class MockURLSessionUploadTask: MockURLSessionDataTask { }
 
-final class MockURLSession: NSObject, URLSessionProtocol {
+final class MockURLSession: NSObject, URLSessionProtocol
+{
     var delegate: URLSessionDelegate?
     var delegateQueue = OperationQueue()
     
-    static func _session(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?) -> MockURLSession {
+    static func _session(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?) -> MockURLSession
+    {
         return MockURLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
     }
     
     required init(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue queue: OperationQueue?) {
         self.delegate = delegate
-        if let queue = queue {
+        if let queue = queue
+        {
             delegateQueue = queue
         }
     }
     
-    private func getEndpoint(from: URL?) -> String {
+    private func getEndpoint(from: URL?) -> String
+    {
         return from?.path ?? ""
     }
     
-    func sessionDataTask(with request: URLRequest) -> URLSessionTaskProtocol {
+    func sessionDataTask(with request: URLRequest) -> URLSessionTaskProtocol
+    {
         return MockURLSessionDataTask(jsonURL: RESTManager.mockConfiguration[getEndpoint(from: request.url)], delegate: delegate as? MockURLSessionDataTask.Delegate, urlSession: self)
     }
     
-    func sessionUploadTask(with request: URLRequest, fromFile fileURL: URL) -> URLSessionTaskProtocol {
+    func sessionUploadTask(with request: URLRequest, fromFile fileURL: URL) -> URLSessionTaskProtocol
+    {
         return MockURLSessionUploadTask(delegate: delegate as? MockURLSessionDataTask.Delegate, urlSession: self)
     }
     
-    func sessionDownloadTask(with request: URLRequest) -> URLSessionTaskProtocol {
+    func sessionDownloadTask(with request: URLRequest) -> URLSessionTaskProtocol
+    {
         return MockURLSessionDownloadTask(delegate: delegate as? MockURLSessionDownloadTask.Delegate, urlSession: self)
     }
 }
