@@ -51,6 +51,32 @@ public class RESTManager
     private lazy var urlSessionProcessor = Processor<URLSession>(configuration: configuration, controller: self)
     private lazy var mockURLSessionProcessor = Processor<MockURLSession>(configuration: configuration, controller: self)
     
+    /// The JSON date decoding strategy to use in this instance of RESTManager
+    ///
+    /// The default strategy is `JSONDecoder.DateDecodingStrategy.deferredToDate`.
+    /// - Note: This value can only be modified before the first request is made.  Any subsequent changes will be ignored
+    public var dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.deferredToDate
+    
+    /// The JSON data decoding strategy to use in this instance of RESTManager
+    ///
+    /// The default strategy is `JSONDecoder.DataDecodingStrategy.base64`.
+    /// - Note: This value can only be modified before the first request is made.  Any subsequent changes will be ignored
+    public var dataDecodingStrategy = JSONDecoder.DataDecodingStrategy.base64
+    
+    /// The JSON key decoding strategy to use in this instance of RESTManager
+    ///
+    /// The default strategy is `JSONDecoder.KeyDecodingStrategy.useDefaultKeys`.
+    /// - Note: This value can only be modified before the first request is made.  Any subsequent changes will be ignored
+    public var keyDecodingStrategy = JSONDecoder.KeyDecodingStrategy.useDefaultKeys
+    
+    private lazy var jsonDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dataDecodingStrategy = dataDecodingStrategy
+        decoder.dateDecodingStrategy = dateDecodingStrategy
+        decoder.keyDecodingStrategy = keyDecodingStrategy
+        return decoder
+    }()
+    
     /**
      The Authorization token used to communicate with the REST endpoints.  Set this after successfully logging a user in
      
@@ -328,7 +354,7 @@ extension RESTManager
         case .success(let data):
             do
             {
-                let object = try JSONDecoder().decode(T.ResponseType.DecodeType.self, from: data)
+                let object = try jsonDecoder.decode(T.ResponseType.DecodeType.self, from: data)
                 if let response = T.ResponseType.from(response: object, request: request)
                 {
                     completion(.success(response), statusCode)
