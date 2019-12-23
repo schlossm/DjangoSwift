@@ -45,8 +45,7 @@ import Foundation
     var delegate: URLSessionDelegate? { get }
     var delegateQueue: OperationQueue { get }
     
-    @objc(sessionWithConfiguration:delegate:delegateQueue:)
-    init(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?)
+    static func _session(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?) -> Self
     
     func sessionDataTask(with request: URLRequest) -> URLSessionTaskProtocol
     
@@ -58,6 +57,10 @@ import Foundation
 extension URLSessionTask: URLSessionTaskProtocol { }
 
 extension URLSession: URLSessionProtocol {
+    static func _session(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?) -> Self {
+        return URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue) as! Self
+    }
+    
     func sessionDataTask(with request: URLRequest) -> URLSessionTaskProtocol {
         let sessionTask: URLSessionDataTask = self.dataTask(with: request)
         return sessionTask

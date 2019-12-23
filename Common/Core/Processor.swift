@@ -48,7 +48,7 @@ fileprivate class _Tracker
 class Processor<T: URLSessionProtocol> : NSObject, URLSessionTaskDelegateProtocol, URLSessionDownloadDelegateProtocol, URLSessionDelegate, URLSessionDataDelegateProtocol
 {
     private var configuration: URLSessionConfiguration
-    private lazy var session = T(configuration: configuration, delegate: self, delegateQueue: nil)
+    private lazy var session = T._session(configuration: configuration, delegate: self, delegateQueue: nil)
     
     private var controller: RESTManager
     

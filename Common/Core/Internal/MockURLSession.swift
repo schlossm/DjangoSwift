@@ -57,12 +57,12 @@ class MockURLSessionDownloadTask: NSObject, URLSessionTaskProtocol {
 
 class MockURLSessionUploadTask: MockURLSessionDataTask { }
 
-class MockURLSession: NSObject, URLSessionProtocol {
+final class MockURLSession: NSObject, URLSessionProtocol {
     var delegate: URLSessionDelegate?
     var delegateQueue = OperationQueue()
     
-    required init(configuration: URLSessionConfiguration) {
-        delegate = nil
+    static func _session(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue: OperationQueue?) -> MockURLSession {
+        return MockURLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
     }
     
     required init(configuration: URLSessionConfiguration, delegate: URLSessionDelegate?, delegateQueue queue: OperationQueue?) {
