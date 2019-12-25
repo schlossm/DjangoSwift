@@ -170,7 +170,7 @@ public class RESTManager
         
         if !request.queryItems.isEmpty
         {
-            comps.queryItems = request.queryItems
+            comps.queryItems = request.queryItems.sorted { $0.name > $1.name }
         }
         
         guard let finalURL = comps.url else
