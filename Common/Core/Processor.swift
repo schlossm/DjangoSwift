@@ -73,77 +73,77 @@ class Processor<T: URLSessionProtocol> : NSObject, URLSessionTaskDelegateProtoco
         return url
     }
     
-    func post(urlRequest: URLRequest, progress: inout Progress?, completion: @escaping ProcessorRESTModelCompletion) throws
+    func post(urlRequest: URLRequest, progress: UnsafeMutablePointer<Progress>?, completion: @escaping ProcessorRESTModelCompletion) throws
     {
         guard let localURL = write(data: urlRequest.httpBody ?? Data()) else
         {
             throw RESTManager.Error.writeFailure
         }
-        upload(urlRequest: urlRequest, localURL: localURL, progress: &progress, completion: completion)
+        upload(urlRequest: urlRequest, localURL: localURL, progress: progress, completion: completion)
     }
     
-    func put(urlRequest: URLRequest, progress: inout Progress?, completion: @escaping ProcessorRESTModelCompletion) throws
+    func put(urlRequest: URLRequest, progress: UnsafeMutablePointer<Progress>?, completion: @escaping ProcessorRESTModelCompletion) throws
     {
         guard let localURL = write(data: urlRequest.httpBody ?? Data()) else
         {
             throw RESTManager.Error.writeFailure
         }
-        upload(urlRequest: urlRequest, localURL: localURL, progress: &progress, completion: completion)
+        upload(urlRequest: urlRequest, localURL: localURL, progress: progress, completion: completion)
     }
     
-    func patch(urlRequest: URLRequest, progress: inout Progress?, completion: @escaping ProcessorRESTModelCompletion) throws
+    func patch(urlRequest: URLRequest, progress: UnsafeMutablePointer<Progress>?, completion: @escaping ProcessorRESTModelCompletion) throws
     {
         guard let localURL = write(data: urlRequest.httpBody ?? Data()) else
         {
             throw RESTManager.Error.writeFailure
         }
-        upload(urlRequest: urlRequest, localURL: localURL, progress: &progress, completion: completion)
+        upload(urlRequest: urlRequest, localURL: localURL, progress: progress, completion: completion)
     }
     
-    func other(urlRequest: URLRequest, progress: inout Progress?, completion: @escaping ProcessorRESTModelCompletion)
+    func other(urlRequest: URLRequest, progress: UnsafeMutablePointer<Progress>?, completion: @escaping ProcessorRESTModelCompletion)
     {
         
         let task: URLSessionTaskProtocol = session.sessionDataTask(with: urlRequest)
         let model = ProcessorRESTModel(task: task, completion: completion)
         if #available(iOS 11.0, *)
         {
-            progress = task.progress
+            progress?.pointee = task.progress
         }
         else
         {
-            progress = model.progress
+            progress?.pointee = model.progress
         }
         _Tracker.shared.append(model)
         task.resume()
     }
     
-    func upload(urlRequest: URLRequest, localURL: URL, progress: inout Progress?, completion: @escaping ProcessorRESTModelCompletion)
+    func upload(urlRequest: URLRequest, localURL: URL, progress: UnsafeMutablePointer<Progress>?, completion: @escaping ProcessorRESTModelCompletion)
     {
         let task: URLSessionTaskProtocol = session.sessionUploadTask(with: urlRequest, fromFile: localURL)
         let model = ProcessorRESTModel(task: task, completion: completion)
         if #available(iOS 11.0, *)
         {
-            progress = task.progress
+            progress?.pointee = task.progress
         }
         else
         {
-            progress = model.progress
+            progress?.pointee = model.progress
         }
         _Tracker.shared.append(model)
         task.resume()
     }
     
-    func download(urlRequest: URLRequest, progress: inout Progress?, completion: @escaping ProcessorFileDownloadCompletion)
+    func download(urlRequest: URLRequest, progress: UnsafeMutablePointer<Progress>?, completion: @escaping ProcessorFileDownloadCompletion)
     {
         let task: URLSessionTaskProtocol = session.sessionDownloadTask(with: urlRequest)
         let model = ProcessorFileDownloadModel(task: task, completion: completion)
         if #available(iOS 11.0, *)
         {
-            progress = task.progress
+            progress?.pointee = task.progress
         }
         else
         {
-            progress = model.progress
+            progress?.pointee = model.progress
         }
         _Tracker.shared.append(model)
         task.resume()

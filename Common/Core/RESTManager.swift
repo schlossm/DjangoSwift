@@ -207,20 +207,20 @@ extension RESTManager
      - Parameter response: An `RESTGETResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func get<T : RESTGETRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: inout Progress?, completion: @escaping RESTCompletion<T>) throws
+    public func get<T : RESTGETRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: UnsafeMutablePointer<Progress>? = nil, completion: @escaping RESTCompletion<T>) throws
     {
         let finalURL = try buildURL(from: request)
         print("GET \(finalURL.absoluteString)")
         
         let urlRequest = self.request(for: finalURL, method: .get)
         if isInMockMode() {
-            mockURLSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            mockURLSessionProcessor.other(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
         else
         {
-            urlSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            urlSessionProcessor.other(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
@@ -239,20 +239,20 @@ extension RESTManager
      - Parameter response: An `RESTPOSTResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func post<T : RESTPOSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: inout Progress?, completion: @escaping RESTCompletion<T>) throws
+    public func post<T : RESTPOSTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: UnsafeMutablePointer<Progress>? = nil, completion: @escaping RESTCompletion<T>) throws
     {
         let finalURL = try buildURL(from: request)
         var urlRequest = self.request(for: finalURL, method: .post)
         urlRequest.httpBody = request.postData
         print("POST \(finalURL)")
         if isInMockMode() {
-            try mockURLSessionProcessor.post(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            try mockURLSessionProcessor.post(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
         else
         {
-            try urlSessionProcessor.post(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            try urlSessionProcessor.post(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
@@ -271,20 +271,20 @@ extension RESTManager
      - Parameter response: An `RESTPUTResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func put<T : RESTPUTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: inout Progress?, completion: @escaping RESTCompletion<T>) throws
+    public func put<T : RESTPUTRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: UnsafeMutablePointer<Progress>? = nil, completion: @escaping RESTCompletion<T>) throws
     {
         let finalURL = try buildURL(from: request)
         var urlRequest = self.request(for: finalURL, method: .put)
         urlRequest.httpBody = request.putData
         print("PUT \(finalURL)")
         if isInMockMode() {
-            try mockURLSessionProcessor.put(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            try mockURLSessionProcessor.put(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
         else
         {
-            try urlSessionProcessor.put(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            try urlSessionProcessor.put(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
@@ -303,20 +303,20 @@ extension RESTManager
      - Parameter response: An `RESTPATCHResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func patch<T : RESTPATCHRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: inout Progress?, completion: @escaping RESTCompletion<T>) throws
+    public func patch<T : RESTPATCHRequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: UnsafeMutablePointer<Progress>? = nil, completion: @escaping RESTCompletion<T>) throws
     {
         let finalURL = try buildURL(from: request)
         var urlRequest = self.request(for: finalURL, method: .patch)
         urlRequest.httpBody = request.patchData
         print("PATCH \(finalURL)")
         if isInMockMode() {
-            try mockURLSessionProcessor.patch(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            try mockURLSessionProcessor.patch(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
         else
         {
-            try urlSessionProcessor.patch(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            try urlSessionProcessor.patch(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
@@ -335,19 +335,19 @@ extension RESTManager
      - Parameter response: An `RESTDELETEResponse` object containing the retrieved object, if any.  This can be `nil`
      - Parameter statusCode: The HTTP Status Code received from the request's endpoint
      */
-    public func delete<T : RESTDELETERequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: inout Progress?, completion: @escaping RESTCompletion<T>) throws
+    public func delete<T : RESTDELETERequest>(request: T, acceptedStatusCodes: [Int] = Array(200...299), progress: UnsafeMutablePointer<Progress>? = nil, completion: @escaping RESTCompletion<T>) throws
     {
         let finalURL = try buildURL(from: request)
         let urlRequest = self.request(for: finalURL, method: .delete)
         print("DELETE \(finalURL)")
         if isInMockMode() {
-            mockURLSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            mockURLSessionProcessor.other(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
         else
         {
-            urlSessionProcessor.other(urlRequest: urlRequest, progress: &progress) { result, statusCode in
+            urlSessionProcessor.other(urlRequest: urlRequest, progress: progress) { result, statusCode in
                 self.process(request: request, result: result, acceptedStatusCodes: acceptedStatusCodes, statusCode: statusCode, completion: completion)
             }
         }
